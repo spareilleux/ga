@@ -10,17 +10,9 @@ namespace GA.Domain.Music
     /// </summary>
     public class Semitone : IEquatable<Semitone>, IComparable<Semitone>
     {
-        protected Semitone(sbyte value)
+        public Semitone(int distance)
         {
-            Distance = value;
-        }
-
-        protected Semitone(int value)
-        {
-            checked
-            {
-                Distance = (sbyte)value;
-            }
+            Distance = distance;
         }
 
         /// <summary>
@@ -166,6 +158,11 @@ namespace GA.Domain.Music
         public static Semitone operator -(Semitone a, Semitone b)
         {
             return new Semitone(a.Distance - b.Distance);
+        }
+
+        public override string ToString()
+        {
+            return $"{Distance}";
         }
     }
 }

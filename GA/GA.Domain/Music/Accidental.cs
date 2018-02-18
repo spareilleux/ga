@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GA.Domain.Music
 {
@@ -13,6 +12,8 @@ namespace GA.Domain.Music
     /// <see href="http://en.wikipedia.org/wiki/Accidental_(music)" />
     public class Accidental : Semitone, IEquatable<Accidental>
     {
+        private readonly sbyte? _value;
+
         [Descriptions("bbb", "\u266D\u266D\u266D")]
         public static readonly Accidental TripleFlat = new Accidental(-3);
 
@@ -34,21 +35,15 @@ namespace GA.Domain.Music
         [Descriptions("x", "\u266F\u266F")]
         public static readonly Accidental DoubleSharp = new Accidental(2);
 
-        private static readonly Dictionary<sbyte?, Accidental> _values = new Dictionary<sbyte?, Accidental>
+        public static readonly IReadOnlyCollection<Accidental> Values = new List<Accidental>
         {
-            [-3] = TripleFlat, [-2] = DoubleFlat, [-1] = Flat,
-            [0] = None, [null] = Natural,
-            [1] = Sharp, [2] = DoubleSharp
-        };
-
-        public static readonly IReadOnlyCollection<Accidental> Values = _values.Values.ToList().AsReadOnly();
-
-        private readonly sbyte? _value;
+            TripleFlat, DoubleFlat, Flat, None, Natural, Sharp, DoubleSharp
+        }.AsReadOnly();
 
         private Accidental(sbyte? value)
             : base(value ?? 0)
         {
-            if (!_values.ContainsKey(value)) throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(value)} value must be between -3 and 2, or null");
+            if (value.HasValue && (value.Value < -3 || value.Value > 2)) throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(value)} value must be between -3 and 2, or null");
 
             _value = value;
         }

@@ -9,7 +9,9 @@ namespace GA.CLI
         {
             Console.WriteLine("Guitar Alchemist");
 
-            var s = new Semitone();
+            var s = new Semitone(10);
+            var flat = Accidental.Flat;
+            var sharp = Accidental.Sharp;
         }
     }
 }
