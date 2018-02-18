@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Stephane Pareilleux</Authors>
+    <Company>Stephane Pareilleux</Company>
+    <Product>Guitar Alchemist</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GA.Core\GA.Core.csproj" />
+  </ItemGroup>
+
+</Project>
