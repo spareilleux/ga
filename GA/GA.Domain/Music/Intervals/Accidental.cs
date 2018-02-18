@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using GA.Core.Attributes;
 
-namespace GA.Domain.Music
+namespace GA.Domain.Music.Intervals
 {
-    using Core.Attributes;
-
     /// <inheritdoc cref="Semitone" />
     /// <summary>
     /// Note or interval accidental.
@@ -37,7 +36,9 @@ namespace GA.Domain.Music
 
         public static readonly IReadOnlyCollection<Accidental> Values = new List<Accidental>
         {
-            TripleFlat, DoubleFlat, Flat, None, Natural, Sharp, DoubleSharp
+            TripleFlat, DoubleFlat, Flat,
+            None, Natural,
+            Sharp, DoubleSharp
         }.AsReadOnly();
 
         private Accidental(sbyte? value)
@@ -46,6 +47,10 @@ namespace GA.Domain.Music
             if (value.HasValue && (value.Value < -3 || value.Value > 2)) throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(value)} value must be between -3 and 2, or null");
 
             _value = value;
+        }
+
+        private Accidental(int value) : this((sbyte?)value)
+        {
         }
 
         public override int Distance => _value ?? 0;
@@ -102,11 +107,11 @@ namespace GA.Domain.Music
         }
 
         /// <summary>
-        /// Converts a string into an accidental
+        /// Converts a string into an accidental.
         /// </summary>
         /// <param name="s">The input string</param>
         /// <returns>The <see cref="Accidental" /> parsed from the string</returns>
-        public static Accidental Parse(string s)
+        public new static Accidental Parse(string s)
         {
             if (!TryParse(s, out var result))
             {
@@ -115,9 +120,9 @@ namespace GA.Domain.Music
             return result;
         }
 
-        public static implicit operator Accidental(Direction direction)
+        public static implicit operator Accidental(Direction? direction)
         {
-            return new Accidental((sbyte)direction);
+            return new Accidental((sbyte?)direction);
         }
 
         public override string ToString()
@@ -169,6 +174,47 @@ namespace GA.Domain.Music
                 // ReSharper disable once ImpureMethodCallOnReadonlyValueField
                 return (base.GetHashCode() * 397) ^ _value.GetHashCode();
             }
+        }
+
+        /// <summary>
+        /// Inverts an <see cref="Accidental" />.
+        /// </summary>
+        /// <param name="accidental">The <see cref="Accidental" /></param>
+        /// <returns>The inverted <see cref="Accidental" />.</returns>
+        public static Accidental operator !(Accidental accidental)
+        {
+            return new Accidental(-accidental.Distance);
+        }
+
+        /// <summary>
+        /// Increments a <see cref="Accidental" /> by one.
+        /// </summary>
+        /// <param name="accidental">The <see cref="Accidental" /></param>
+        /// <returns>The resulting <see cref="Accidental" />.</returns>
+        public static Accidental operator ++(Accidental accidental)
+        {
+            return new Accidental(accidental.Distance + 1);
+        }
+
+        /// <summary>
+        /// Decrements a <see cref="Accidental" /> by one.
+        /// </summary>
+        /// <param name="accidental">The <see cref="Accidental" /></param>
+        /// <returns>The resulting <see cref="Accidental" />.</returns>
+        public static Accidental operator --(Accidental accidental)
+        {
+            return new Accidental(accidental.Distance - 1);
+        }
+
+        /// <summary>
+        /// Adds two <see cref="Accidental" /> objects.
+        /// </summary>
+        /// <param name="a">The first <see cref="Accidental" /></param>
+        /// <param name="b">The second <see cref="Accidental" /></param>
+        /// <returns>The sum of the two <see cref="Accidental" /> objects</returns>
+        public static Accidental operator +(Accidental a, Accidental b)
+        {
+            return new Accidental(a.Distance + b.Distance);
         }
     }
 }

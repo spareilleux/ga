@@ -1,5 +1,6 @@
 ﻿using System;
-using GA.Domain.Music;
+using GA.Domain.Music.Intervals;
+using GA.Domain.Music.Intervals.Scales;
 
 namespace GA.CLI
 {
@@ -12,6 +13,8 @@ namespace GA.CLI
             var s = new Semitone(10);
             var flat = Accidental.Flat;
             var sharp = Accidental.Sharp;
+
+            var a = ScaleDefinition.ByName;
         }
     }
 }

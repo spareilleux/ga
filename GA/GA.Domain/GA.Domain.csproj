@@ -5,7 +5,18 @@
     <Authors>Stephane Pareilleux</Authors>
     <Company>Stephane Pareilleux</Company>
     <Product>Guitar Alchemist</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryUrl>https://github.com/spareilleux/ga</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageLicenseUrl>https://github.com/spareilleux/ga/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright></Copyright>
+    <PackageProjectUrl>https://github.com/spareilleux/ga</PackageProjectUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GA.Core\GA.Core.csproj" />
