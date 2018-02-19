@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using GA.Domain.Music.Intervals.Collections;
 
 namespace GA.Domain.Music.Intervals.Metadata
 {
@@ -7,64 +9,60 @@ namespace GA.Domain.Music.Intervals.Metadata
     /// </summary>
     public class Symmetry
     {
-        public Symmetry(IReadOnlyList<Semitone> relativesSemitones)
+        public Symmetry(IReadOnlyList<Semitone> relativesIntervals)
         {
-            var count = relativesSemitones.Count;
-            BlockSize = 0;
-            BlockCount = 0;
+            var count = relativesIntervals.Count;
+            if (count % 2 != 0) return; // Ensure count divides by 2
 
-            // Not symmetric if interval length is odd 
-            if (count % 2 != 0) return;
-
-            for (var blocksize = 1; blocksize < count / 2; blocksize++)
+            bool CheckIntervals(int candidateBlockSize)
             {
-                // Skip block size if needed
-                if (count % blocksize != 0) continue;
+                if (count % candidateBlockSize != 0) return false; // Ensure count divides by blocksize
+                var blockCount = count / candidateBlockSize;
 
-                var blockcount = count / blocksize;
-
-                // Compare each interval in all blocks
-                for (var i = 0; i < blocksize; i++)
+                for (var i = 0; i < candidateBlockSize; i++)
                 {
-                    IsSymmetric = true;
-                    var interval = (int)relativesSemitones[i];
-                    for (var j = 0; j < blockcount; j++)
+                    var interval = relativesIntervals[i];
+                    for (var j = 1; j < blockCount; j++)
                     {
-                        if (relativesSemitones[i + j * blocksize] == interval) continue;
-
-                        IsSymmetric = false;
-                        break;
+                        var index = i + j * candidateBlockSize;
+                        if (relativesIntervals[index] != interval) return false;
                     }
-
-                    if (!IsSymmetric) continue;
-
-                    BlockSize = blocksize;
-                    BlockCount = blockcount;
-                    break;
                 }
+
+                return true;
             }
+
+            var blockSize = Enumerable.Range(1, count / 2).FirstOrDefault(CheckIntervals);
+            if (blockSize < 0) return;
+
+            // Intervals are symmetric
+            Block = new RelativeSemitoneList(relativesIntervals.Take(blockSize));
+            BlockCount = count / blockSize;
         }
 
         /// <summary>
-        /// Gets a flag that indicates  whether the scale is symmetric.
+        /// Gets a flag that indicates whether the intervals are symmetric.
         /// </summary>
-        public bool IsSymmetric { get; }
+        public bool IsSymmetric => BlockCount > 0;
 
         /// <summary>
-        /// Gets the size of the symmetry block.
+        /// Gets the <see cref="RelativeSemitoneList "/> symmetry block.
         /// </summary>
-        public int BlockSize { get; }
+        public RelativeSemitoneList Block { get; }
 
         /// <summary>
         /// Gets the number of symmetry blocks.
         /// </summary>
         public int BlockCount { get; }
 
-       public override string ToString()
-       {
-           if (IsSymmetric)
-                return $"Symmetric: {BlockCount} blocks of {BlockSize} elements";
-           return "Non-symmetric";
-       }
+        public override string ToString()
+        {
+            if (IsSymmetric)
+            {
+                return $"{BlockCount} x {Block}";
+            }
+
+            return "Non-symmetric";
+        }
     }
 }

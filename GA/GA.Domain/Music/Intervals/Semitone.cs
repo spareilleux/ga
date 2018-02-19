@@ -202,7 +202,7 @@ namespace GA.Domain.Music.Intervals
         public static bool operator ==(Semitone a, Semitone b)
         {
             if (ReferenceEquals(a, b)) return true;
-            return a != null && b != null && a.Distance == b.Distance;
+            return a?.Distance == b?.Distance;
         }
 
         /// <summary>

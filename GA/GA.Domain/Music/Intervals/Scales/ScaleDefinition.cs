@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using GA.Domain.Music.Intervals.Collections;
 using GA.Domain.Music.Intervals.Metadata;
-using JetBrains.Annotations;
 
 namespace GA.Domain.Music.Intervals.Scales
 {
@@ -51,9 +50,6 @@ namespace GA.Domain.Music.Intervals.Scales
         /// Gets the scale definitions indexed by name.
         /// </summary>
         public static IDictionary<string, ScaleDefinition> ByName = GetScaleDefinitionByName();
-
-        [CanBeNull]
-        public string Name { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="RelativeSemitoneList"/>.
@@ -103,7 +99,14 @@ namespace GA.Domain.Music.Intervals.Scales
 
         public override string ToString()
         {
-            return Relative.ToString();
+            var result = Relative.ToString();
+
+            if (Symmetry.IsSymmetric)
+            {
+                result = $"{result} ({Symmetry}";
+            }
+
+            return result;
         }
 
         private static IDictionary<string, ScaleDefinition> GetScaleDefinitionByName()

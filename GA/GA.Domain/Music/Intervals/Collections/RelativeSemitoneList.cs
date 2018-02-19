@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GA.Domain.Music.Intervals.Metadata;
 
 namespace GA.Domain.Music.Intervals.Collections
@@ -11,7 +12,6 @@ namespace GA.Domain.Music.Intervals.Collections
         public RelativeSemitoneList(IEnumerable<Semitone> relativeSemitones)
         {
             Relative = new SemitoneList(relativeSemitones);
-            Symmetry = new Symmetry(Relative);
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace GA.Domain.Music.Intervals.Collections
         /// <summary>
         /// Gets the <see cref="Symmetry"/>.
         /// </summary>
-        public Symmetry Symmetry { get; }
+        public Symmetry Symmetry => new Symmetry(Relative);
 
         /// <summary>
         /// Gets the absolute <see cref="SemitoneList"/>.
@@ -60,7 +60,7 @@ namespace GA.Domain.Music.Intervals.Collections
 
         public override string ToString()
         {
-            var result = $"Relative: {Relative}";
+            var result = string.Join("-", Relative.Select(s => $"{s}"));
 
             return result;
         }
