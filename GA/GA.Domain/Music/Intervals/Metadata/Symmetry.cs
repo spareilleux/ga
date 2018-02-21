@@ -33,7 +33,7 @@ namespace GA.Domain.Music.Intervals.Metadata
             }
 
             var blockSize = Enumerable.Range(1, count / 2).FirstOrDefault(CheckIntervals);
-            if (blockSize < 0) return;
+            if (blockSize <= 0) return;
 
             // Intervals are symmetric
             Block = new RelativeSemitoneList(relativesIntervals.Take(blockSize));
@@ -57,12 +57,7 @@ namespace GA.Domain.Music.Intervals.Metadata
 
         public override string ToString()
         {
-            if (IsSymmetric)
-            {
-                return $"{BlockCount} x {Block}";
-            }
-
-            return "Non-symmetric";
+            return IsSymmetric ? $"Symmetric: {BlockCount} x {Block}" : "(None)";
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using GA.Domain.Music.Intervals;
 using GA.Domain.Music.Intervals.Scales;
+using GA.Domain.Music.Intervals.Scales.Modes;
 
 namespace GA.CLI
 {
@@ -14,7 +15,9 @@ namespace GA.CLI
             var flat = Accidental.Flat;
             var sharp = Accidental.Sharp;
 
-            var a = ScaleDefinition.ByName;
+            var allScales = ScaleDefinition.All;
+            var major = ScaleDefinition.Major;
+            var dorian = ScaleDefinition.Major[MajorScaleMode.Dorian];
         }
     }
 }

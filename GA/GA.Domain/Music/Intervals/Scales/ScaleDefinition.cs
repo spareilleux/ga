@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using GA.Domain.Music.Intervals.Collections;
-using GA.Domain.Music.Intervals.Metadata;
+using GA.Domain.Music.Intervals.Scales.Modes;
 
 namespace GA.Domain.Music.Intervals.Scales
 {
@@ -14,74 +13,60 @@ namespace GA.Domain.Music.Intervals.Scales
     /// <summary>
     /// Scale definition.
     /// </summary>
-    public class ScaleDefinition : ISemitoneList
+    public class ScaleDefinition : RelativeSemitoneList
     {
-        [Description("major")]
-        public static ScaleDefinition Major = Parse("2 2 1 2 2 2 1");
-        [Description("natural minor")]
-        public static ScaleDefinition NaturalMinor = Parse("2 1 2 2 1 2 2");
-        [Description("harmonic minor")]
-        public static ScaleDefinition HarmonicMinor = Parse("2 1 2 2 1 3 1");
-        [Description("melodic minor")]
-        public static ScaleDefinition MelodicMinor = Parse("2 1 2 2 2 2 1");
+        private const string major = "major";
+        private const string naturalMinor = "natural minor";
+        private const string harmonicMinor = "harmonic minor";
+        private const string melodicMinor = "melodic minor";
+
+        [Description(major)]
+        public static ModalScaleDefinition<MajorScaleMode> Major = Parse("2-2-1-2-2-2-1").AsModal<MajorScaleMode>(major);
+        [Description(naturalMinor)]
+        public static ModalScaleDefinition<NaturalMinorScaleMode> NaturalMinor = Parse("2-1-2-2-1-2-2").AsModal<NaturalMinorScaleMode>(naturalMinor);
+        [Description(harmonicMinor)]
+        public static ModalScaleDefinition<HarmonicMinorScaleMode> HarmonicMinor = Parse("2-1-2-2-1-3-1").AsModal<HarmonicMinorScaleMode>(harmonicMinor);
+        [Description(melodicMinor)]
+        public static ModalScaleDefinition<MelodicMinorScaleMode> MelodicMinor = Parse("2-1-2-2-2-2-1").AsModal<MelodicMinorScaleMode>(melodicMinor);
+
         [Description("augmented")]
-        public static ScaleDefinition Aug = Parse("3 1 3 1 3 1");
+        public static ScaleDefinition Aug = "3-1-3-1-3-1";
         [Description("diminished (Half,whole)")]
-        public static ScaleDefinition DimHalfWhole = Parse("1 2 1 2 1 2 1 2");
+        public static ScaleDefinition DimHalfWhole = "1-2-1-2-1-2-1-2";
         [Description("diminished (Whole,half)")]
-        public static ScaleDefinition DimWholeHalf = Parse("2 1 2 1 2 1 2 1");
+        public static ScaleDefinition DimWholeHalf = "2-1-2-1-2-1-2-1";
         [Description("whole tone")]
-        public static ScaleDefinition WholeTone = Parse("2 2 2 2 2 2");
+        public static ScaleDefinition WholeTone = "2-2-2-2-2-2";
         [Description("pentatonic minor")]
-        public static ScaleDefinition PentatonicMajor = Parse("2 2 3 2 3");
+        public static ScaleDefinition PentatonicMajor = "2-2-3-2-3";
         [Description("pentatonic minor")]
-        public static ScaleDefinition PentatonicMinor = Parse("2 2 3 2 3");
+        public static ScaleDefinition PentatonicMinor = "2-2-3-2-3";
 
-        private readonly SemitoneList _semitoneList;
-
-        public ScaleDefinition(IEnumerable<Semitone> relativeSemitones)
+        public ScaleDefinition(IEnumerable<Semitone> relativeSemitones) 
+            : base(relativeSemitones)
         {
-            Relative = new RelativeSemitoneList(relativeSemitones);
-            _semitoneList = Relative.ToAbsolute();
-            Symmetry = Relative.Symmetry;
         }
 
         /// <summary>
         /// Gets the scale definitions indexed by name.
         /// </summary>
-        public static IDictionary<string, ScaleDefinition> ByName = GetScaleDefinitionByName();
+        public static IReadOnlyDictionary<string, ScaleDefinition> ByName = GetScaleDefinitionByName();
 
         /// <summary>
-        /// Gets the <see cref="RelativeSemitoneList"/>.
+        /// Gets all scale definitions.
         /// </summary>
-        public RelativeSemitoneList Relative { get; }
-        
-        /// <inheritdoc />
-        public Symmetry Symmetry { get; }
+        public static IReadOnlyList<ScaleDefinition> All = ByName.Values.ToList().AsReadOnly();
 
-        /// <inheritdoc />
-        public RelativeSemitoneList ToRelative()
+        public ScaleDefinition AsModal(string scaleName)
         {
-            return Relative;
+            return new ModalScaleDefinition(this, scaleName);
         }
 
-        /// <inheritdoc />
-        public IEnumerator<Semitone> GetEnumerator()
+        public ModalScaleDefinition<TScaleMode> AsModal<TScaleMode>(string scaleName)
+            where TScaleMode : struct
         {
-            return _semitoneList.GetEnumerator();
+            return new ModalScaleDefinition<TScaleMode>(this, scaleName);
         }
-
-        /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        /// <inheritdoc />
-        public int Count => _semitoneList.Count;
-
-        /// <inheritdoc />
-        public Semitone this[int index] => _semitoneList[index];
 
         /// <summary>
         /// Converts the string representation of a semitones to its scale definition equivalent (Relative).
@@ -89,17 +74,17 @@ namespace GA.Domain.Music.Intervals.Scales
         /// <param name="distances">The <see cref="string"/> represention on the semitone relative distances (int separated by space character or ';' or ',')</param>
         /// <returns>The <see cref="ScaleDefinition"/>.</returns>
         /// <exception cref="System.FormatException">Throw if the format is incorrect,</exception>
-        public static ScaleDefinition Parse(string distances)
+        public new static ScaleDefinition Parse(string distances)
         {
             var relativeSemitones = RelativeSemitoneList.Parse(distances);
-            var result = new ScaleDefinition(relativeSemitones.Relative);
+            var result = new ScaleDefinition(relativeSemitones);
 
             return result;
         }
 
         public override string ToString()
         {
-            var result = Relative.ToString();
+            var result = base.ToString();
 
             if (Symmetry.IsSymmetric)
             {
@@ -109,12 +94,25 @@ namespace GA.Domain.Music.Intervals.Scales
             return result;
         }
 
-        private static IDictionary<string, ScaleDefinition> GetScaleDefinitionByName()
+        /// <summary>
+        /// Converrts a distances string into a scale definition.
+        /// </summary>
+        /// <param name="distances">The distance <see cref="string" /></param>
+        /// <returns>The <see cref="ScaleDefinition" /> objects</returns>
+        public static implicit operator ScaleDefinition(string distances)
+        {
+            return Parse(distances);
+        }
+
+        /// <summary>
+        /// Gets scale definitions, indexed by name.
+        /// </summary>
+        private static IReadOnlyDictionary<string, ScaleDefinition> GetScaleDefinitionByName()
         {
             var dict = new Dictionary<string, ScaleDefinition>(StringComparer.OrdinalIgnoreCase);
             var fields =
                 typeof(ScaleDefinition).GetFields(BindingFlags.Public | BindingFlags.Static)
-                    .Where(fi => fi.FieldType == typeof(ScaleDefinition))
+                    .Where(fi => typeof(ScaleDefinition).IsAssignableFrom(fi.FieldType))
                     .ToList();
             foreach (var field in fields)
             {
