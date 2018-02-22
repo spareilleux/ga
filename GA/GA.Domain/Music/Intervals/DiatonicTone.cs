@@ -16,9 +16,9 @@ namespace GA.Domain.Music.Intervals
         }
 
         /// <summary>
-        /// Gets the <see cref="Direction"/>.
+        /// Gets the <see cref="AccidentalKind"/>.
         /// </summary>
-        public Direction Direction => (Direction)Math.Sign(Distance);
+        public AccidentalKind AccidentalKind => (AccidentalKind)Math.Sign(Distance);
 
         /// <summary>
         /// Gets the distance in DiatonicTones (Signed).

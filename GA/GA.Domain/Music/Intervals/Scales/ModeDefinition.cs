@@ -11,11 +11,13 @@ namespace GA.Domain.Music.Intervals.Scales
         public ModeDefinition(            
             IEnumerable<Semitone> relativeSemitones,
             ModalScaleDefinition parentScale,
-            string modeName) 
+            string modeName,
+            int modeIndex) 
             : base(relativeSemitones)
         {
             ParentScale = parentScale;
             ModeName = modeName;
+            ModeIndex = modeIndex;
         }
 
         /// <summary>
@@ -23,7 +25,15 @@ namespace GA.Domain.Music.Intervals.Scales
         /// </summary>
         public ModalScaleDefinition ParentScale { get; }
 
+        /// <summary>
+        /// Gets the mode name.
+        /// </summary>
         public string ModeName { get; }
+
+        /// <summary>
+        /// Gets the mode index (0-based).
+        /// </summary>
+        public int ModeIndex { get; }
 
         public override string ToString()
         {

@@ -1,9 +1,9 @@
 ﻿namespace GA.Domain.Music.Intervals
 {
     /// <summary>
-    /// Interval directorion (i.e. "b" or "#")
+    /// The accidental kind (flat or sharp)
     /// </summary>
-    public enum Direction
+    public enum AccidentalKind
     {
         Flat = -1,
         Sharp = 1

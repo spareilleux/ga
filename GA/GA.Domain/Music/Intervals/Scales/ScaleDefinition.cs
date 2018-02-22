@@ -5,7 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using GA.Domain.Music.Intervals.Collections;
+using GA.Domain.Music.Intervals.Qualities;
 using GA.Domain.Music.Intervals.Scales.Modes;
+using JetBrains.Annotations;
 
 namespace GA.Domain.Music.Intervals.Scales
 {
@@ -33,10 +35,31 @@ namespace GA.Domain.Music.Intervals.Scales
         [Description("pentatonic minor")]
         public static ScaleDefinition PentatonicMinor = "2-2-3-2-3";
 
-        public ScaleDefinition(IEnumerable<Semitone> relativeSemitones) 
+        private static readonly Semitone _m3 = Quality.m3;
+
+        public ScaleDefinition(
+            IEnumerable<Semitone> relativeSemitones,
+            string name = null) 
             : base(relativeSemitones)
         {
+            Name = name;
         }
+
+        /// <summary>
+        /// Gets the scale name (Can be null).
+        /// </summary>
+        [CanBeNull]
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Gets the distances <see cref="string"/>.
+        /// </summary>
+        public string Distances => base.ToString();
+
+        /// <summary>
+        /// Gets a flag that indicates whether the scale is minor (Contains a minor 3rd).
+        /// </summary>
+        public bool IsMinor => Absolute.Contains(_m3);
 
         /// <summary>
         /// Gets the scale definitions indexed by name.
@@ -76,6 +99,10 @@ namespace GA.Domain.Music.Intervals.Scales
         public override string ToString()
         {
             var result = base.ToString();
+            if (!string.IsNullOrEmpty(Name))
+            {
+                result = $"{result} - {Name} scale";
+            }
 
             if (Symmetry.IsSymmetric)
             {
@@ -106,9 +133,18 @@ namespace GA.Domain.Music.Intervals.Scales
                     .Where(fi => typeof(ScaleDefinition).IsAssignableFrom(fi.FieldType))
                     .ToList();
             foreach (var field in fields)
-            {
-                var scaleName = field.GetCustomAttribute<DescriptionAttribute>().Description;
+            {                
                 var scaleDefinition = (ScaleDefinition)field.GetValue(null);
+                string scaleName;
+                if (scaleDefinition is ModalScaleDefinition modalScaleDefinition)
+                {
+                    scaleName = modalScaleDefinition.ScaleName;
+                }
+                else
+                {
+                    scaleName = field.GetCustomAttribute<DescriptionAttribute>().Description;
+                    scaleDefinition.Name = scaleName;
+                }
                 dict[scaleName] = scaleDefinition;
             }
 

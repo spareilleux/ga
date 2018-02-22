@@ -46,7 +46,7 @@ namespace GA.Domain.Music.Intervals.Scales
         {
             var modeName = $"Mode #{modeIndex + 1} of {ScaleName}";
             var relativeSemitones = this.Rotate(modeIndex + 1);
-            var result = new ModeDefinition(relativeSemitones, this, modeName);
+            var result = new ModeDefinition(relativeSemitones, this, modeName, modeIndex);
 
             return result;
         }
@@ -91,7 +91,7 @@ namespace GA.Domain.Music.Intervals.Scales
             var modeIndex = (int)Convert.ChangeType(scaleMode, TypeCode.Int32) - 1;
             var modeName = $"{scaleMode.GetFieldDescription()} mode (Mode #{modeIndex + 1} of {ScaleName} scale)";
             var relativeSemitones = this.Rotate(modeIndex + 1);
-            var result = new ModeDefinition(relativeSemitones, this, modeName);
+            var result = new ModeDefinition(relativeSemitones, this, modeName, modeIndex);
 
             return result;
         }

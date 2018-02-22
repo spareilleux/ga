@@ -18,6 +18,7 @@ namespace GA.CLI
             var allScales = ScaleDefinition.All;
             var major = ScaleDefinition.Major;
             var dorian = ScaleDefinition.Major[MajorScaleMode.Dorian];
+            var isMinor = dorian.IsMinor;
         }
     }
 }

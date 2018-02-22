@@ -120,9 +120,9 @@ namespace GA.Domain.Music.Intervals
             return result;
         }
 
-        public static implicit operator Accidental(Direction? direction)
+        public static implicit operator Accidental(AccidentalKind? accidentalKind)
         {
-            return new Accidental((sbyte?)direction);
+            return new Accidental((sbyte?)accidentalKind);
         }
 
         public override string ToString()

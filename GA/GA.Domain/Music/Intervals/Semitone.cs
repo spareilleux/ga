@@ -21,9 +21,9 @@ namespace GA.Domain.Music.Intervals
         }
 
         /// <summary>
-        /// Gets the <see cref="Direction"/>.
+        /// Gets the <see cref="AccidentalKind"/>.
         /// </summary>
-        public Direction Direction => (Direction)Math.Sign(Distance);
+        public AccidentalKind AccidentalKind => (AccidentalKind)Math.Sign(Distance);
 
         /// <summary>
         /// Gets the distance in semitones (Signed).
@@ -282,14 +282,14 @@ namespace GA.Domain.Music.Intervals
 
 
         /// <summary>
-        /// Changes the direction of a <see cref="Semitone" />.
+        /// Changes the accidentalKind of a <see cref="Semitone" />.
         /// </summary>
         /// <param name="a">The <see cref="Semitone" /></param>
-        /// <param name="direction">The <see cref="Direction" /></param>
+        /// <param name="accidentalKind">The <see cref="AccidentalKind" /></param>
         /// <returns>The sum of the two <see cref="Semitone" /> objects</returns>
-        public static Semitone operator *(Semitone a, Direction direction)
+        public static Semitone operator *(Semitone a, AccidentalKind accidentalKind)
         {
-            return new Semitone(a.Distance * (int)direction);
+            return new Semitone(a.Distance * (int)accidentalKind);
         }
 
         /// <summary>

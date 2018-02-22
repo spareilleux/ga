@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using GA.Domain.Music.Intervals.Metadata;
 
@@ -7,21 +8,26 @@ namespace GA.Domain.Music.Intervals.Collections
 {
     /// <inheritdoc />
     /// <summary>
-    /// Collection of semitones (Relative).
+    /// List  of semitones (Relative).
     /// </summary>
-    public class RelativeSemitoneList : ISemitoneList
+    public class RelativeSemitoneList : ISemitones
     {
         private readonly IReadOnlyList<Semitone> _relativeSemitones;
 
         public RelativeSemitoneList(IEnumerable<Semitone> relativeSemitones)
         {
-            _relativeSemitones = relativeSemitones.ToList().AsReadOnly();
+            _relativeSemitones = relativeSemitones.ToList().AsReadOnly();            
         }
 
         /// <summary>
         /// Gets the <see cref="Symmetry"/>.
         /// </summary>
         public Symmetry Symmetry => new Symmetry(_relativeSemitones);
+
+        /// <summary>
+        /// Gets the <see cref="AbsoluteSemitoneList"/>
+        /// </summary>
+        public AbsoluteSemitoneList Absolute => ToAbsolute();
 
         /// <summary>
         /// Gets the <see cref="AbsoluteSemitoneList"/> (Absolute).
@@ -31,10 +37,10 @@ namespace GA.Domain.Music.Intervals.Collections
         {
             var semitone = Semitone.Unison;
             var semitones = new List<Semitone>();
-            foreach (var incremengt in _relativeSemitones)
+            foreach (var increment in _relativeSemitones)
             {
                 semitones.Add(semitone);
-                semitone += incremengt;
+                semitone += increment;
             }
             semitones.Add(semitone);
 

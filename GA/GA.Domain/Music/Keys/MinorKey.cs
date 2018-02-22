@@ -2,6 +2,9 @@
 
 namespace GA.Domain.Music.Keys
 {
+    /// <summary>
+    /// Major key (-1 = one flat; 1 = one sharp, etc...)
+    /// </summary>
     public enum MinorKey
     {
         Abm = -7,

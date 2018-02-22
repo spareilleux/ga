@@ -71,7 +71,7 @@ namespace GA.Domain.Music.Intervals
 
         private static int GetDistance(int value)
         {
-            if (value < 0 || value >= 12) throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(value)} must be between 0 and 11");
+            if (value < 0 || value >= 23) throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(value)} must be between 0 and 11");
 
             return _intervals[value];
         }
@@ -274,9 +274,9 @@ namespace GA.Domain.Music.Intervals
             return interval.ToInversion();
         }
 
-        public static DiatonicInterval operator *(DiatonicInterval interval, Direction direction)
+        public static DiatonicInterval operator *(DiatonicInterval interval, AccidentalKind accidentalKind)
         {
-            return direction == Direction.Flat
+            return accidentalKind == AccidentalKind.Flat
                        ? interval.ToInversion()
                        : interval;
         }

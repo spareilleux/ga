@@ -9,9 +9,10 @@ namespace GA.Domain.Music.Intervals.Metadata
     /// </summary>
     public class Symmetry
     {
-        public Symmetry(IReadOnlyList<Semitone> relativesIntervals)
+        public Symmetry(IReadOnlyCollection<Semitone> relativesIntervals)
         {
-            var count = relativesIntervals.Count;
+            var list = relativesIntervals.ToList();
+            var count = list.Count;
             if (count % 2 != 0) return; // Ensure count divides by 2
 
             bool CheckIntervals(int candidateBlockSize)
@@ -21,11 +22,11 @@ namespace GA.Domain.Music.Intervals.Metadata
 
                 for (var i = 0; i < candidateBlockSize; i++)
                 {
-                    var interval = relativesIntervals[i];
+                    var interval = list[i];
                     for (var j = 1; j < blockCount; j++)
                     {
                         var index = i + j * candidateBlockSize;
-                        if (relativesIntervals[index] != interval) return false;
+                        if (list[index] != interval) return false;
                     }
                 }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using GA.Domain.Music.Intervals.Metadata;
 
@@ -7,25 +8,30 @@ namespace GA.Domain.Music.Intervals.Collections
 {
     /// <inheritdoc />
     /// <summary>
-    /// Collection of semitones (Absolute).
+    /// List of semitones (Absolute).
     /// </summary>
-    public class AbsoluteSemitoneList : ISemitoneList
+    public class AbsoluteSemitoneList : ISemitones
     {
         protected readonly IReadOnlyList<Semitone> AbsoluteSemitones;
+
+        /// <summary>
+        /// Gets the <see cref="ImmutableSortedSet{Semitone}"/>.
+        /// </summary>
+        protected readonly ImmutableSortedSet<Semitone> AbsoluteSemitonesSet;
 
         /// <summary>
         /// Converts the string representation of a semitones to its semitones collection equivalent.
         /// </summary>
         /// <param name="distances">The <see cref="string"/> represention on the semitone distances.</param>\
-        /// <param name="separators">The <see cref="System.array{char}"/> (Optional, space separator is used by default)</param>\
+        /// <param name="separators">The <see cref="IEnumerable{Char}"/> (Optional, ' ' separator is used by default)</param>\
         /// <returns>The <see cref="AbsoluteSemitoneList"/>.</returns>
         /// <exception cref="System.FormatException">Throw if the format is incorrect,</exception>
         public static AbsoluteSemitoneList Parse(
             string distances, 
-            char[] separators = null)
+            IEnumerable<char> separators = null)
         {
             separators = separators ?? new [] {' '};
-            var semitones = distances.Split(separators).Select(Semitone.Parse);
+            var semitones = distances.Split(separators.ToArray()).Select(Semitone.Parse);
             var result = new AbsoluteSemitoneList(semitones);
 
             return result;
@@ -36,16 +42,22 @@ namespace GA.Domain.Music.Intervals.Collections
         {
         }
 
-        protected AbsoluteSemitoneList(IEnumerable<int> distances)
-        {
-            AbsoluteSemitones = distances.Select(d => (Semitone)d).ToList();
-            Symmetry = new Symmetry(this);
-        }
-
         public AbsoluteSemitoneList(IEnumerable<Semitone> semitones)
         {
             AbsoluteSemitones = semitones.ToList().AsReadOnly();
         }
+
+        protected AbsoluteSemitoneList(IEnumerable<int> absoluteDistances)
+        {
+            AbsoluteSemitones = absoluteDistances.Select(d => (Semitone)d).ToList();
+            AbsoluteSemitonesSet = new SortedSet<Semitone>(AbsoluteSemitones).ToImmutableSortedSet();
+            Symmetry = new Symmetry(this);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IImmutableSet{Semitone}"/>.
+        /// </summary>
+        public IImmutableSet<Semitone> Set => AbsoluteSemitonesSet;
 
         public IEnumerator<Semitone> GetEnumerator()
         {

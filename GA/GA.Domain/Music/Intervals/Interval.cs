@@ -101,10 +101,10 @@ namespace GA.Domain.Music.Intervals
         /// <summary>
         /// Returns the corresponding Quality
         /// </summary>
-        public Quality ToQuality(Direction direction)
+        public Quality ToQuality(AccidentalKind accidentalKind)
         {
             var result = 
-                direction == Direction.Flat 
+                accidentalKind == AccidentalKind.Flat 
                     ? (Quality)FlatQuality.FromSemitone(this)
                     : SharpQuality.FromSemitone(this);
 

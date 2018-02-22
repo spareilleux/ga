@@ -13,10 +13,7 @@ namespace GA.Domain.Music.Intervals.Qualities
     /// <see href="http://www.theguitarsuite.com/Theory/Intervals.html" />
     public class Quality : Semitone, IComparable<Quality>, IEquatable<Quality>
     {
-        private static readonly ILookup<Quality, Quality> _enharmonics = GetEnharmonicsLookup();
-
         public static IEqualityComparer<Quality> EnharmonicEqualityComparer => EnharmonicComparer.Instance;
-
 
         // ReSharper disable InconsistentNaming
 
@@ -213,40 +210,41 @@ namespace GA.Domain.Music.Intervals.Qualities
 
         private static readonly Dictionary<Quality, string> _fullname =
             new Dictionary<Quality, string>
-                {
-                    { P1, "perfect unison" },
-                    { A1, "augmented unison" },
-                    { m2, "minor 2nd" },
-                    { M2, "major 2nd" },
-                    { A2, "augmented 2nd" },
-                    { m3, "minor 3rd" },
-                    { M3, "major 3rd" },
-                    { d4, "diminished 4th" },
-                    { P4, "perfect 4th" },
-                    { A4, "augmented 4th" },
-                    { d5, "diminished 5th" },
-                    { P5, "perfect 5th" },
-                    { A5, "augmented 5th" },
-                    { m6, "minor 6th" },
-                    { M6, "major 6th" },
-                    { A6, "augmented 6th" },
-                    { d7, "diminished 7th" },
-                    { m7, "minor 7th" },
-                    { M7, "major 7th" },
-                    { P8, "octave" },
-                    { m9, "minor 9th" },
-                    { M9, "major 9th" },
-                    { A9, "augmented 9th" },
-                    { M10, "major 10th" },
-                    { P11, "perfect 11th" },
-                    { A11, "augmented 11th" },
-                    { P12, "perfect 12th" },
-                    { m13, "minor 13th" },
-                    { M13, "major 13th" },
-                    { m14, "minor 14th" },
-                    { M14, "major 14th" }
-                };
+            {
+                {P1, "perfect unison"},
+                {A1, "augmented unison"},
+                {m2, "minor 2nd"},
+                {M2, "major 2nd"},
+                {A2, "augmented 2nd"},
+                {m3, "minor 3rd"},
+                {M3, "major 3rd"},
+                {d4, "diminished 4th"},
+                {P4, "perfect 4th"},
+                {A4, "augmented 4th"},
+                {d5, "diminished 5th"},
+                {P5, "perfect 5th"},
+                {A5, "augmented 5th"},
+                {m6, "minor 6th"},
+                {M6, "major 6th"},
+                {A6, "augmented 6th"},
+                {d7, "diminished 7th"},
+                {m7, "minor 7th"},
+                {M7, "major 7th"},
+                {P8, "octave"},
+                {m9, "minor 9th"},
+                {M9, "major 9th"},
+                {A9, "augmented 9th"},
+                {M10, "major 10th"},
+                {P11, "perfect 11th"},
+                {A11, "augmented 11th"},
+                {P12, "perfect 12th"},
+                {m13, "minor 13th"},
+                {M13, "major 13th"},
+                {m14, "minor 14th"},
+                {M14, "major 14th"}
+            };
 
+        private static readonly ILookup<Quality, Quality> _enharmonics = GetEnharmonicsLookup();
 
         public Quality(int distance)
             : base(distance)
@@ -260,7 +258,7 @@ namespace GA.Domain.Music.Intervals.Qualities
 
         public Quality(
             DiatonicInterval diatonicInterval,
-            Accidental accidental)  : base(diatonicInterval + accidental)
+            Accidental accidental)  : base(diatonicInterval.Distance + accidental.Distance)
         {
             DiatonicInterval = diatonicInterval;
             Accidental = accidental;
@@ -458,6 +456,8 @@ namespace GA.Domain.Music.Intervals.Qualities
         /// </summary>
         public static bool operator ==(Quality a, Quality b)
         {
+            if (ReferenceEquals(a, b)) return true;
+            if (ReferenceEquals(null, a)) return false;
             var result = a.Equals(b);
 
             return result;
@@ -505,7 +505,7 @@ namespace GA.Domain.Music.Intervals.Qualities
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Quality)obj);
         }
 
