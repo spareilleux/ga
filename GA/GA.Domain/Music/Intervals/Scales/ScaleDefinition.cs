@@ -15,19 +15,10 @@ namespace GA.Domain.Music.Intervals.Scales
     /// </summary>
     public class ScaleDefinition : RelativeSemitoneList
     {
-        private const string major = "major";
-        private const string naturalMinor = "natural minor";
-        private const string harmonicMinor = "harmonic minor";
-        private const string melodicMinor = "melodic minor";
-
-        [Description(major)]
-        public static ModalScaleDefinition<MajorScaleMode> Major = Parse("2-2-1-2-2-2-1").AsModal<MajorScaleMode>(major);
-        [Description(naturalMinor)]
-        public static ModalScaleDefinition<NaturalMinorScaleMode> NaturalMinor = Parse("2-1-2-2-1-2-2").AsModal<NaturalMinorScaleMode>(naturalMinor);
-        [Description(harmonicMinor)]
-        public static ModalScaleDefinition<HarmonicMinorScaleMode> HarmonicMinor = Parse("2-1-2-2-1-3-1").AsModal<HarmonicMinorScaleMode>(harmonicMinor);
-        [Description(melodicMinor)]
-        public static ModalScaleDefinition<MelodicMinorScaleMode> MelodicMinor = Parse("2-1-2-2-2-2-1").AsModal<MelodicMinorScaleMode>(melodicMinor);
+        public static ModalScaleDefinition<MajorScaleMode> Major = Parse("2-2-1-2-2-2-1").AsModal<MajorScaleMode>(TonalFamily.Major);
+        public static ModalScaleDefinition<NaturalMinorScaleMode> NaturalMinor = Parse("2-1-2-2-1-2-2").AsModal<NaturalMinorScaleMode>(TonalFamily.NaturalMinor);
+        public static ModalScaleDefinition<HarmonicMinorScaleMode> HarmonicMinor = Parse("2-1-2-2-1-3-1").AsModal<HarmonicMinorScaleMode>(TonalFamily.HarmonicMinor);
+        public static ModalScaleDefinition<MelodicMinorScaleMode> MelodicMinor = Parse("2-1-2-2-2-2-1").AsModal<MelodicMinorScaleMode>(TonalFamily.MelodicMinor);
 
         [Description("augmented")]
         public static ScaleDefinition Aug = "3-1-3-1-3-1";
@@ -57,15 +48,15 @@ namespace GA.Domain.Music.Intervals.Scales
         /// </summary>
         public static IReadOnlyList<ScaleDefinition> All = ByName.Values.ToList().AsReadOnly();
 
-        public ScaleDefinition AsModal(string scaleName)
+        public ScaleDefinition AsModal(TonalFamily tonalFamily)
         {
-            return new ModalScaleDefinition(this, scaleName);
+            return new ModalScaleDefinition(this, tonalFamily);
         }
 
-        public ModalScaleDefinition<TScaleMode> AsModal<TScaleMode>(string scaleName)
+        public ModalScaleDefinition<TScaleMode> AsModal<TScaleMode>(TonalFamily tonalFamily)
             where TScaleMode : struct
         {
-            return new ModalScaleDefinition<TScaleMode>(this, scaleName);
+            return new ModalScaleDefinition<TScaleMode>(this, tonalFamily);
         }
 
         /// <summary>

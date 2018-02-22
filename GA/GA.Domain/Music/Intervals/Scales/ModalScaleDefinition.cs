@@ -13,14 +13,20 @@ namespace GA.Domain.Music.Intervals.Scales
     {
         public ModalScaleDefinition(
             IEnumerable<Semitone> relativeSemitones,
-            string scaleName)
+            TonalFamily tonalFamilty)
             : base(relativeSemitones)
         {
-            ScaleName = scaleName;
+            ScaleName = tonalFamilty.GetFieldDescription();
+            TonalFamily = tonalFamilty;
             Modes = Enumerable.Range(0, 7).Select(GetMode).ToList().AsReadOnly();
         }
 
         public string ScaleName { get; }
+
+        /// <summary>
+        /// Gets the <see cref="TonalFamily"/>.
+        /// </summary>
+        public TonalFamily TonalFamily { get; }
 
         public IReadOnlyList<ModeDefinition> Modes { get; protected set; }
 
@@ -60,8 +66,8 @@ namespace GA.Domain.Music.Intervals.Scales
     {
         public ModalScaleDefinition(
             IEnumerable<Semitone> relativeSemitones,
-            string scaleName)
-            : base(relativeSemitones, scaleName)
+            TonalFamily tonalFamily)
+            : base(relativeSemitones, tonalFamily)
         {
             var scaleModes = Enum.GetValues(typeof(TScaleMode)).Cast<TScaleMode>();
             Modes = scaleModes.Select(GetMode).ToList().AsReadOnly();
