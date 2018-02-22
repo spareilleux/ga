@@ -16,7 +16,8 @@ namespace GA.Domain.Music.Intervals.Collections
 
         public RelativeSemitoneList(IEnumerable<Semitone> relativeSemitones)
         {
-            _relativeSemitones = relativeSemitones.ToList().AsReadOnly();            
+            _relativeSemitones = relativeSemitones.ToList().AsReadOnly();
+            Absolute = ToAbsolute();
         }
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace GA.Domain.Music.Intervals.Collections
         /// <summary>
         /// Gets the <see cref="AbsoluteSemitoneList"/>
         /// </summary>
-        public AbsoluteSemitoneList Absolute => ToAbsolute();
+        public AbsoluteSemitoneList Absolute { get; }
 
         /// <summary>
         /// Gets the <see cref="AbsoluteSemitoneList"/> (Absolute).
@@ -83,5 +84,11 @@ namespace GA.Domain.Music.Intervals.Collections
         public int Count => _relativeSemitones.Count;
 
         public Semitone this[int index] => _relativeSemitones[index];
+        public bool Contains(Semitone item)
+        {
+            var result = Absolute.Contains(item);
+
+            return result;
+        }
     }
 }

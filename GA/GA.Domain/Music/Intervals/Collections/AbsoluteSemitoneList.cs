@@ -15,11 +15,6 @@ namespace GA.Domain.Music.Intervals.Collections
         protected readonly IReadOnlyList<Semitone> AbsoluteSemitones;
 
         /// <summary>
-        /// Gets the <see cref="ImmutableSortedSet{Semitone}"/>.
-        /// </summary>
-        protected readonly ImmutableSortedSet<Semitone> AbsoluteSemitonesSet;
-
-        /// <summary>
         /// Converts the string representation of a semitones to its semitones collection equivalent.
         /// </summary>
         /// <param name="distances">The <see cref="string"/> represention on the semitone distances.</param>\
@@ -50,14 +45,18 @@ namespace GA.Domain.Music.Intervals.Collections
         protected AbsoluteSemitoneList(IEnumerable<int> absoluteDistances)
         {
             AbsoluteSemitones = absoluteDistances.Select(d => (Semitone)d).ToList();
-            AbsoluteSemitonesSet = new SortedSet<Semitone>(AbsoluteSemitones).ToImmutableSortedSet();
             Symmetry = new Symmetry(this);
         }
 
         /// <summary>
         /// Gets the <see cref="IImmutableSet{Semitone}"/>.
         /// </summary>
-        public IImmutableSet<Semitone> Set => AbsoluteSemitonesSet;
+        public IImmutableSet<Semitone> Set => new SortedSet<Semitone>(AbsoluteSemitones).ToImmutableSortedSet();
+
+        /// <summary>
+        /// Gets <see cref="Symmetry"/>.
+        /// </summary>
+        public Symmetry Symmetry { get; }
 
         public IEnumerator<Semitone> GetEnumerator()
         {
@@ -73,10 +72,12 @@ namespace GA.Domain.Music.Intervals.Collections
 
         public Semitone this[int index] => AbsoluteSemitones[index];
 
-        /// <summary>
-        /// Gets <see cref="Symmetry"/>.
-        /// </summary>
-        public Symmetry Symmetry { get; }
+        public bool Contains(Semitone item)
+        {
+            var result = Set.Contains(item);
+
+            return result;
+        }
 
         /// <summary>
         /// Gets the <see cref="RelativeSemitoneList" />.

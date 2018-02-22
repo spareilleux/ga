@@ -30,19 +30,21 @@ namespace GA.Domain.Music.Intervals.Scales
         public static ScaleDefinition DimWholeHalf = "2-1-2-1-2-1-2-1";
         [Description("whole tone")]
         public static ScaleDefinition WholeTone = "2-2-2-2-2-2";
-        [Description("pentatonic minor")]
+        [Description("pentatonic major")]
         public static ScaleDefinition PentatonicMajor = "2-2-3-2-3";
         [Description("pentatonic minor")]
-        public static ScaleDefinition PentatonicMinor = "2-2-3-2-3";
-
-        private static readonly Semitone _m3 = Quality.m3;
+        public static ScaleDefinition PentatonicMinor = "3-2-2-3-2";
 
         public ScaleDefinition(
             IEnumerable<Semitone> relativeSemitones,
             string name = null) 
             : base(relativeSemitones)
         {
+            var totalDistance = relativeSemitones.Aggregate(0, (i, semitone) => i + semitone.Distance);
+            if (totalDistance != 12) throw new ArgumentException($"Invalid scale definition - the sum of '{nameof(relativeSemitones)}' is {totalDistance} and must be equal to 12", nameof(relativeSemitones));
+
             Name = name;
+            IsMinor = Absolute.Contains(Quality.m3);
         }
 
         /// <summary>
@@ -52,14 +54,14 @@ namespace GA.Domain.Music.Intervals.Scales
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets the distances <see cref="string"/>.
+        /// Gets <see cref="string"/> that represents scale steps.
         /// </summary>
-        public string Distances => base.ToString();
+        public string Steps => base.ToString();
 
         /// <summary>
         /// Gets a flag that indicates whether the scale is minor (Contains a minor 3rd).
         /// </summary>
-        public bool IsMinor => Absolute.Contains(_m3);
+        public bool IsMinor { get; }
 
         /// <summary>
         /// Gets the scale definitions indexed by name.

@@ -8,5 +8,6 @@ namespace GA.Domain.Music.Intervals.Collections
     /// </summary>
     public interface ISemitones : IReadOnlyList<Semitone>
     {
+        bool Contains(Semitone item);
     }
 }
