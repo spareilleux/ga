@@ -1,5 +1,5 @@
-using GA.Domain.Music.Intervals.Scales;
-using GA.Domain.Music.Intervals.Scales.Modes;
+using GA.Domain.Music.Scales;
+using GA.Domain.Music.Scales.Modes;
 using NUnit.Framework;
 
 namespace GA.Domain.Tests.Music.Interval.Scales

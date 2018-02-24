@@ -15,9 +15,9 @@ namespace GA.Domain.Music.Intervals.Collections
     {
         private readonly IReadOnlyList<TQuality> _qualities;
 
-        protected QualityListBase(AbsoluteSemitoneList absoluteSemitones)
+        protected QualityListBase(IEnumerable<TQuality> qualities)
         {
-            _qualities = absoluteSemitones.Select(semitone => (TQuality) semitone).ToList().AsReadOnly();
+            _qualities = qualities.ToList().AsReadOnly();            
         }
 
         public IEnumerator<TQuality> GetEnumerator()

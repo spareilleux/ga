@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace GA.Domain.Music.Intervals.Qualities
@@ -15,7 +17,47 @@ namespace GA.Domain.Music.Intervals.Qualities
     {
         public static IEqualityComparer<Quality> EnharmonicEqualityComparer => EnharmonicComparer.Instance;
 
+        /// <summary>
+        /// Gets the scale definitions indexed by field name.
+        /// </summary>
+        public static IReadOnlyDictionary<string, Quality> ByFieldName;
+
+        /// <summary>
+        /// Gets the scale definitions indexed by name.
+        /// </summary>
+        public static IReadOnlyDictionary<string, Quality> ByName;
+
+        /// <summary>
+        /// Gets all scale qualities.
+        /// </summary>
+        public static IReadOnlyList<Quality> All;
+
+        /// <summary>
+        /// Finds qualities for the given accidental kind (Flat or sharp).
+        /// </summary>
+        /// <param name="accidentalKind">The <see cref="AccidentalKind"/>.</param>
+        /// <returns></returns>
+        protected static IEnumerable<Quality> Find(AccidentalKind accidentalKind)
+        {
+            var result = All.Where(quality => quality.Accidental == null || 
+                                              quality.Accidental.AccidentalKind == accidentalKind && quality.Accidental.AbsoluteDistance <= 1)
+                            .ToList();
+
+            return result;
+        }
+
         // ReSharper disable InconsistentNaming
+        static Quality()
+        {
+            var fieldInfos = typeof(Quality)
+                .GetFields(BindingFlags.Public | BindingFlags.Static)
+                .Where(fi => typeof(Quality).IsAssignableFrom(fi.FieldType))
+                .ToList().AsReadOnly();
+
+            ByFieldName = GetQualitiesByFieldName(fieldInfos);
+            ByName = GetQualitiesByName(fieldInfos);
+            All = ByName.Values.ToList().AsReadOnly();
+        }
 
         /// <summary>
         /// Perfect unison quality
@@ -189,24 +231,36 @@ namespace GA.Domain.Music.Intervals.Qualities
 
         // ReSharper restore InconsistentNaming
 
-        public static readonly Quality[] Values =
+        private static IReadOnlyDictionary<string, Quality> GetQualitiesByFieldName(IEnumerable<FieldInfo> fields)
+        {
+            var dict = new Dictionary<string, Quality>(StringComparer.Ordinal);
+            foreach (var field in fields)
             {
-                P1, A1,
-                m2, M2, A2,
-                m3, M3,
-                d4, P4, A4,
-                d5, P5, A5,
-                m6, M6, A6,
-                d7, m7, M7,
-                P8,
-                m9, M9, A9,
-                M10,
-                P11, A11,
-                P12,
-                m13, M13,
-                m14, M14
-            };
+                var quality = (Quality)field.GetValue(null);
+                dict[field.Name] = quality; // e.g. "m3"
+            }
 
+            var result = new ReadOnlyDictionary<string, Quality>(dict);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets qualities definitions, indexed by name.
+        /// </summary>
+        private static IReadOnlyDictionary<string, Quality> GetQualitiesByName(IEnumerable<FieldInfo> fields)
+        {
+            var dict = new Dictionary<string, Quality>(StringComparer.Ordinal);
+            foreach (var field in fields)
+            {
+                var quality = (Quality)field.GetValue(null);
+                dict[quality.ToString()] = quality; // e.g. "b3"
+            }
+
+            var result = new ReadOnlyDictionary<string, Quality>(dict);
+
+            return result;
+        }
 
         private static readonly Dictionary<Quality, string> _fullname =
             new Dictionary<Quality, string>
@@ -258,7 +312,7 @@ namespace GA.Domain.Music.Intervals.Qualities
 
         public Quality(
             DiatonicInterval diatonicInterval,
-            Accidental accidental)  : base(diatonicInterval.Distance + accidental.Distance)
+            Accidental accidental) : base(diatonicInterval.Distance + accidental.Distance)
         {
             DiatonicInterval = diatonicInterval;
             Accidental = accidental;
@@ -302,6 +356,19 @@ namespace GA.Domain.Music.Intervals.Qualities
         {
             quality = P1;
 
+            if (ByFieldName.TryGetValue(s, out var fq))
+            {
+                quality = fq;
+                return true;
+            }
+
+            if (ByName.TryGetValue(s, out var nq))
+            {
+                quality = nq;
+                return true;
+            }
+
+            // Fall back (Defensive)
             s = Regex.Replace(s.Trim(), "[()]", "");
             var accidentalString = Regex.Match(s, "^[^0-9]*").ToString();
             var diatonicIntervalString = Regex.Match(s, "[0-9]*$").ToString();
@@ -357,7 +424,7 @@ namespace GA.Domain.Music.Intervals.Qualities
 
             if (string.IsNullOrEmpty(s) || s.Length == 0)
             {
-                return new Quality[] {};
+                return new Quality[] { };
             }
 
             var result = new List<Quality>(s.Split(' ', ',', ';').Select(Parse));

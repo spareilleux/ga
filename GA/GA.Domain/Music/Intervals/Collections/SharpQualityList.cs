@@ -1,4 +1,5 @@
-﻿using GA.Domain.Music.Intervals.Qualities;
+﻿using System.Linq;
+using GA.Domain.Music.Intervals.Qualities;
 
 namespace GA.Domain.Music.Intervals.Collections
 {
@@ -8,8 +9,8 @@ namespace GA.Domain.Music.Intervals.Collections
     /// </summary>    
     public class SharpQualityList : QualityListBase<SharpQuality>
     {
-        public SharpQualityList(AbsoluteSemitoneList absoluteSemitones) 
-            : base(absoluteSemitones)
+        public SharpQualityList(AbsoluteSemitoneList absoluteSemitones)
+            : base(absoluteSemitones.Select(SharpQuality.FromSemitone))
         {
         }
     }

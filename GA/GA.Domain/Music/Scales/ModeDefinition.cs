@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using GA.Domain.Music.Intervals;
 
-namespace GA.Domain.Music.Intervals.Scales
+namespace GA.Domain.Music.Scales
 {
     /// <inheritdoc />
     /// <summary>
@@ -11,11 +12,13 @@ namespace GA.Domain.Music.Intervals.Scales
         public ModeDefinition(            
             IEnumerable<Semitone> relativeSemitones,
             ModalScaleDefinition parentScale,
+            Semitone distanceFromParentScale,
             string modeName,
             int modeIndex) 
             : base(relativeSemitones)
         {
             ParentScale = parentScale;
+            DistanceFromParentScale = distanceFromParentScale;
             ModeName = modeName;
             ModeIndex = modeIndex;
         }
@@ -24,6 +27,11 @@ namespace GA.Domain.Music.Intervals.Scales
         /// Gets the <see cref="ModalScaleDefinition"/>
         /// </summary>
         public ModalScaleDefinition ParentScale { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Semitone"/> distance from parent scale,
+        /// </summary>
+        public Semitone DistanceFromParentScale { get; }
 
         /// <summary>
         /// Gets the mode name.

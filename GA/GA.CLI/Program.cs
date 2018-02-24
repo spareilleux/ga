@@ -1,7 +1,7 @@
 ﻿using System;
 using GA.Domain.Music.Intervals;
-using GA.Domain.Music.Intervals.Scales;
-using GA.Domain.Music.Intervals.Scales.Modes;
+using GA.Domain.Music.Scales;
+using GA.Domain.Music.Scales.Modes;
 
 namespace GA.CLI
 {
@@ -19,6 +19,7 @@ namespace GA.CLI
             var major = ScaleDefinition.Major;
             var dorian = ScaleDefinition.Major[MajorScaleMode.Dorian];
             var isMinor = dorian.IsMinor;
+            var pentMinor = ScaleDefinition.PentatonicMinorTest.Steps;
         }
     }
 }

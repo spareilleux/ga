@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace GA.Domain.Music.Intervals.Scales
+namespace GA.Domain.Music.Scales
 {
     public enum TonalFamily
     {

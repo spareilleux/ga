@@ -4,12 +4,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using GA.Domain.Music.Intervals;
 using GA.Domain.Music.Intervals.Collections;
 using GA.Domain.Music.Intervals.Qualities;
-using GA.Domain.Music.Intervals.Scales.Modes;
+using GA.Domain.Music.Scales.Modes;
 using JetBrains.Annotations;
 
-namespace GA.Domain.Music.Intervals.Scales
+namespace GA.Domain.Music.Scales
 {
     /// <inheritdoc />
     /// <summary>
@@ -34,24 +35,29 @@ namespace GA.Domain.Music.Intervals.Scales
         public static ScaleDefinition PentatonicMajor = "2-2-3-2-3";
         [Description("pentatonic minor")]
         public static ScaleDefinition PentatonicMinor = "3-2-2-3-2";
+        [Description("pentatonic minor (test)")]
+        public static ScaleDefinition PentatonicMinorTest = "W-W-m3-W-m3";
 
+
+        // ReSharper disable PossibleMultipleEnumeration
         public ScaleDefinition(
             IEnumerable<Semitone> relativeSemitones,
-            string name = null) 
+            string scaleName = null)             
             : base(relativeSemitones)
         {
             var totalDistance = relativeSemitones.Aggregate(0, (i, semitone) => i + semitone.Distance);
             if (totalDistance != 12) throw new ArgumentException($"Invalid scale definition - the sum of '{nameof(relativeSemitones)}' is {totalDistance} and must be equal to 12", nameof(relativeSemitones));
 
-            Name = name;
+            ScaleName = scaleName;
             IsMinor = Absolute.Contains(Quality.m3);
         }
+        // ReSharper restore PossibleMultipleEnumeration
 
         /// <summary>
-        /// Gets the scale name (Can be null).
+        /// Gets the scale scaleName (Can be null).
         /// </summary>
         [CanBeNull]
-        public string Name { get; private set; }
+        public string ScaleName { get; private set; }
 
         /// <summary>
         /// Gets <see cref="string"/> that represents scale steps.
@@ -64,7 +70,7 @@ namespace GA.Domain.Music.Intervals.Scales
         public bool IsMinor { get; }
 
         /// <summary>
-        /// Gets the scale definitions indexed by name.
+        /// Gets the scale definitions indexed by scaleName.
         /// </summary>
         public static IReadOnlyDictionary<string, ScaleDefinition> ByName = GetScaleDefinitionByName();
 
@@ -85,14 +91,15 @@ namespace GA.Domain.Music.Intervals.Scales
         }
 
         /// <summary>
-        /// Converts the string representation of a semitones to its scale definition equivalent (Relative).
+        /// Converts the string representation of a relative semitones list into its scale definition equivalent.
         /// </summary>
-        /// <param name="distances">The <see cref="string"/> represention on the semitone relative distances (int separated by space character or ';' or ',')</param>
+        /// <param scaleName="s">The <see cref="string"/> represention of the semitone relative distances.</param>
         /// <returns>The <see cref="ScaleDefinition"/>.</returns>
         /// <exception cref="System.FormatException">Throw if the format is incorrect,</exception>
-        public new static ScaleDefinition Parse(string distances)
+        public static ScaleDefinition Parse(
+            string s)
         {
-            var relativeSemitones = RelativeSemitoneList.Parse(distances);
+            var relativeSemitones = RelativeSemitoneList.Parse(s);
             var result = new ScaleDefinition(relativeSemitones);
 
             return result;
@@ -101,9 +108,9 @@ namespace GA.Domain.Music.Intervals.Scales
         public override string ToString()
         {
             var result = base.ToString();
-            if (!string.IsNullOrEmpty(Name))
+            if (!string.IsNullOrEmpty(ScaleName))
             {
-                result = $"{result} - {Name} scale";
+                result = $"{result} - {ScaleName} scale";
             }
 
             if (Symmetry.IsSymmetric)
@@ -117,7 +124,7 @@ namespace GA.Domain.Music.Intervals.Scales
         /// <summary>
         /// Converrts a distances string into a scale definition.
         /// </summary>
-        /// <param name="distances">The distance <see cref="string" /></param>
+        /// <param scaleName="distances">The distance <see cref="string" /></param>
         /// <returns>The <see cref="ScaleDefinition" /> objects</returns>
         public static implicit operator ScaleDefinition(string distances)
         {
@@ -125,7 +132,7 @@ namespace GA.Domain.Music.Intervals.Scales
         }
 
         /// <summary>
-        /// Gets scale definitions, indexed by name.
+        /// Gets scale definitions, indexed by scaleName.
         /// </summary>
         private static IReadOnlyDictionary<string, ScaleDefinition> GetScaleDefinitionByName()
         {
@@ -145,7 +152,7 @@ namespace GA.Domain.Music.Intervals.Scales
                 else
                 {
                     scaleName = field.GetCustomAttribute<DescriptionAttribute>().Description;
-                    scaleDefinition.Name = scaleName;
+                    scaleDefinition.ScaleName = scaleName;
                 }
                 dict[scaleName] = scaleDefinition;
             }

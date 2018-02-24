@@ -23,7 +23,7 @@ namespace GA.Domain.Music.Intervals
         /// <summary>
         /// Gets the <see cref="AccidentalKind"/>.
         /// </summary>
-        public AccidentalKind AccidentalKind => (AccidentalKind)Math.Sign(Distance);
+        public virtual AccidentalKind? AccidentalKind => (AccidentalKind)Math.Sign(Distance);
 
         /// <summary>
         /// Gets the distance in semitones (Signed).
@@ -202,7 +202,10 @@ namespace GA.Domain.Music.Intervals
         public static bool operator ==(Semitone a, Semitone b)
         {
             if (ReferenceEquals(a, b)) return true;
-            return a?.Distance == b?.Distance;
+            var aDistance = a?.Distance ?? 0;
+            var bDistance = b?.Distance ?? 0;
+
+            return aDistance == bDistance;
         }
 
         /// <summary>

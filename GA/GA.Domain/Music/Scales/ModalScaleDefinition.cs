@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using GA.Core.Extensions;
+using GA.Domain.Music.Intervals;
 
-namespace GA.Domain.Music.Intervals.Scales
+namespace GA.Domain.Music.Scales
 {
     /// <inheritdoc />
     /// <summary>
@@ -14,14 +15,11 @@ namespace GA.Domain.Music.Intervals.Scales
         public ModalScaleDefinition(
             IEnumerable<Semitone> relativeSemitones,
             TonalFamily tonalFamilty)
-            : base(relativeSemitones)
+            : base(relativeSemitones, tonalFamilty.GetFieldDescription())
         {
-            ScaleName = tonalFamilty.GetFieldDescription();
             TonalFamily = tonalFamilty;
             Modes = Enumerable.Range(0, 7).Select(GetMode).ToList().AsReadOnly();
         }
-
-        public string ScaleName { get; }
 
         /// <summary>
         /// Gets the <see cref="TonalFamily"/>.
@@ -46,7 +44,13 @@ namespace GA.Domain.Music.Intervals.Scales
         {
             var modeName = $"Mode #{modeIndex + 1} of {ScaleName}";
             var relativeSemitones = this.Rotate(modeIndex + 1);
-            var result = new ModeDefinition(relativeSemitones, this, modeName, modeIndex);
+            var sum = (Semitone)this.Take(modeIndex).Sum(s => s);
+            var result = new ModeDefinition(
+                relativeSemitones,
+                this,
+                sum,
+                modeName,
+                modeIndex);
 
             return result;
         }
@@ -91,7 +95,13 @@ namespace GA.Domain.Music.Intervals.Scales
             var modeIndex = (int)Convert.ChangeType(scaleMode, TypeCode.Int32) - 1;
             var modeName = $"{scaleMode.GetFieldDescription()} mode (Mode #{modeIndex + 1} of {ScaleName} scale)";
             var relativeSemitones = this.Rotate(modeIndex + 1);
-            var result = new ModeDefinition(relativeSemitones, this, modeName, modeIndex);
+            var sum = (Semitone)this.Take(modeIndex).Sum(s => s);
+            var result = new ModeDefinition(
+                relativeSemitones,
+                this,
+                sum,
+                modeName,
+                modeIndex);
 
             return result;
         }

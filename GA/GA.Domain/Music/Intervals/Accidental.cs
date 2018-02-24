@@ -53,7 +53,11 @@ namespace GA.Domain.Music.Intervals
         {
         }
 
+        /// <inheritdoc />
         public override int Distance => _value ?? 0;
+
+        /// <inheritdoc />
+        public override AccidentalKind? AccidentalKind => IsUnison ? null : base.AccidentalKind;
 
         /// <summary>
         /// Tries to convert a string into an accidental

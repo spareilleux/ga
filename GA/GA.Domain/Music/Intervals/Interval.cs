@@ -104,7 +104,7 @@ namespace GA.Domain.Music.Intervals
         public Quality ToQuality(AccidentalKind accidentalKind)
         {
             var result = 
-                accidentalKind == AccidentalKind.Flat 
+                accidentalKind == Intervals.AccidentalKind.Flat 
                     ? (Quality)FlatQuality.FromSemitone(this)
                     : SharpQuality.FromSemitone(this);
 

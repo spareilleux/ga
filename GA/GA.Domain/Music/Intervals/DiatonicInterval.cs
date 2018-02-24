@@ -276,7 +276,7 @@ namespace GA.Domain.Music.Intervals
 
         public static DiatonicInterval operator *(DiatonicInterval interval, AccidentalKind accidentalKind)
         {
-            return accidentalKind == AccidentalKind.Flat
+            return accidentalKind == Intervals.AccidentalKind.Flat
                        ? interval.ToInversion()
                        : interval;
         }

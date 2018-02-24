@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using GA.Domain.Music.Intervals.Metadata;
+using GA.Domain.Music.Intervals.Qualities;
 
 namespace GA.Domain.Music.Intervals.Collections
 {
@@ -15,18 +17,18 @@ namespace GA.Domain.Music.Intervals.Collections
         protected readonly IReadOnlyList<Semitone> AbsoluteSemitones;
 
         /// <summary>
-        /// Converts the string representation of a semitones to its semitones collection equivalent.
+        /// Converts an absolute semitones list from its string representation.
         /// </summary>
-        /// <param name="distances">The <see cref="string"/> represention on the semitone distances.</param>\
+        /// <param name="s">The <see cref="string"/> represention of the semitone distances.</param>
         /// <param name="separators">The <see cref="IEnumerable{Char}"/> (Optional, ' ' separator is used by default)</param>\
         /// <returns>The <see cref="AbsoluteSemitoneList"/>.</returns>
         /// <exception cref="System.FormatException">Throw if the format is incorrect,</exception>
         public static AbsoluteSemitoneList Parse(
-            string distances, 
+            string s, 
             IEnumerable<char> separators = null)
         {
             separators = separators ?? new [] {' '};
-            var semitones = distances.Split(separators.ToArray()).Select(Semitone.Parse);
+            var semitones = s.Split(separators.ToArray()).Select(ParseSelector);
             var result = new AbsoluteSemitoneList(semitones);
 
             return result;
@@ -102,6 +104,15 @@ namespace GA.Domain.Music.Intervals.Collections
             var result = string.Join(", ", AbsoluteSemitones.Select(s => $"{s}"));
 
             return result;
+        }
+
+        private static Semitone ParseSelector(string s)
+        {
+            s = s?.Trim();
+            if (Semitone.TryParse(s, out var semitone)) return semitone;
+            if (Quality.TryParse(s, out var quality)) return quality;
+
+            throw new InvalidOperationException($"Failed parsing '{s}' into {nameof(Semitone)}");
         }
     }
 }

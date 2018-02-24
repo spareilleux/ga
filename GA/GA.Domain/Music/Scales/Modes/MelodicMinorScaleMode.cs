@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace GA.Domain.Music.Intervals.Scales.Modes
+namespace GA.Domain.Music.Scales.Modes
 {
     public enum MelodicMinorScaleMode
     {
