@@ -9,12 +9,12 @@
         // ReSharper disable InconsistentNaming
 
         /// <summary>
-        /// Perfect unison quality
+        /// Ha;f tone.
         /// </summary>
         public static readonly Step H = new Step(1);
 
         /// <summary>
-        /// Augmented unison quality
+        /// Whole tone.
         /// </summary>
         public static readonly Step W = new Step(2);
 
@@ -26,9 +26,7 @@
         /// <summary>
         /// Try to convert a string into a step.
         /// </summary>
-        /// <param name="s">
-        /// The string.
-        /// </param>
+        /// <param name="s">the <see cref="string"/></param>
         /// <param name="step">
         /// The quality.
         /// </param>

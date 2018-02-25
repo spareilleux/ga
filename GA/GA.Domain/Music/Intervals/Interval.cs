@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using GA.Domain.Music.Intervals.Metadata;
 using GA.Domain.Music.Intervals.Qualities;
 
 namespace GA.Domain.Music.Intervals
@@ -58,16 +60,39 @@ namespace GA.Domain.Music.Intervals
         public static readonly Interval M14 = (Interval)23;
         // ReSharper restore InconsistentNaming
 
-        private static readonly string[] description =
+        private static readonly string[] _description =
             {
                 "1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7", "8",
                 "b9", "9", "#9", "10", "11", "#11", "12", "b13", "13", "b14", "14"
             };
 
+        private static readonly Dictionary<int, Consonance> _consonances =
+            new Dictionary<int, Consonance>
+            {
+                { 0, Consonance.PerfectConsonance },    // 6/6 - 1   +++
+                { 1, Consonance.PerfectDissonance },    // 1/6 - b2  ---   
+                { 2, Consonance.MediocreDissonance },   // 2/6 - 2   --
+                { 3, Consonance.ImperfectConsonance },  // 4/6 - b3  +
+                { 4, Consonance.ImperfectConsonance },  // 4/6 - 3   +
+                { 5, Consonance.MediocreConsonance },   // 5/6 - 4   ++
+                { 6, Consonance.PerfectDissonance },    // 1/6 - #4  ---
+                { 7, Consonance.MediocreConsonance },   // 5/6 - 5   ++
+                { 8, Consonance.MediocreDissonance },   // 2/6 - b6  --
+                { 9, Consonance.ImperfectDissonance },  // 3/6 - 6   -
+                { 10, Consonance.ImperfectDissonance }, // 3/6 - b7  -
+                { 11, Consonance.PerfectDissonance },   // 1/6 - 7   ---
+            };
+
+
         public Interval(int distance)
             : base(distance)
         {
         }
+
+        /// <summary>
+        /// Gets the interval <see cref="Consonance"/>.
+        /// </summary>
+        public Consonance Consonance => _consonances[AbsoluteDistance % 12];
 
         /// <summary>
         /// Gets the simple interval.
@@ -113,7 +138,7 @@ namespace GA.Domain.Music.Intervals
 
         public override string ToString()
         {
-            return description[DoubleOctaveDistance];
+            return _description[DoubleOctaveDistance];
         }
 
         public static Interval operator ++(Interval interval)

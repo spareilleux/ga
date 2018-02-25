@@ -114,7 +114,7 @@ namespace GA.Domain.Music.Intervals
         /// Converts a string into an accidental.
         /// </summary>
         /// <param name="s">The input string</param>
-        /// <returns>The <see cref="Accidental" /> parsed from the string</returns>
+        /// <returns>The <see cref="Accidental" /> .</returns>
         public new static Accidental Parse(string s)
         {
             if (!TryParse(s, out var result))
