@@ -1,24 +1,28 @@
 ﻿using System;
+using GA.Domain.Extensions;
 using GA.Domain.Music.Intervals;
+using GA.Domain.Music.Notes;
 
 namespace GA.Domain.Music.Keys
 {
     public class Key
     {
+        /// <inheritdoc />
         /// <summary>
         /// Creates a key instance (Major key).
         /// </summary>
-        /// <param name="majorKey">The <see cref="MajorKey"/>.</param>
+        /// <param name="majorKey">The <see cref="P:GA.Domain.Music.Keys.Key.MajorKey" />.</param>
         public Key(MajorKey majorKey) :
             this((int)majorKey)
         {
             Mode = KeyMode.Major;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Creates a key instance (Major key).
         /// </summary>
-        /// <param name="minorKey">The <see cref="MinorKey"/>.</param>
+        /// <param name="minorKey">The <see cref="P:GA.Domain.Music.Keys.Key.MinorKey" />.</param>
         public Key(MinorKey minorKey) :
             this((int)minorKey)
         {
@@ -36,6 +40,8 @@ namespace GA.Domain.Music.Keys
             MajorKey = (MajorKey)signedAccidentalCount;
             MinorKey = (MinorKey)signedAccidentalCount;
         }
+
+        public Note Root => MajorKey.GetRoot();
 
         /// <summary>
         /// Gets the number of accidentals.

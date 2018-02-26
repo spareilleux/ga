@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using GA.Domain.Music.Notes;
 
 namespace GA.Domain.Music.Keys
 {
