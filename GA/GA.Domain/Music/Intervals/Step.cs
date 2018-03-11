@@ -28,7 +28,7 @@
         /// </summary>
         /// <param name="s">the <see cref="string"/></param>
         /// <param name="step">
-        /// The quality.
+        /// The semitoneQuality.
         /// </param>
         /// <returns>
         /// The <see cref="bool" />.

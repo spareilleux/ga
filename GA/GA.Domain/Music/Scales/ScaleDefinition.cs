@@ -18,8 +18,13 @@ namespace GA.Domain.Music.Scales
     /// </summary>
     public class ScaleDefinition : RelativeSemitoneList
     {
-        public static ModalScaleDefinition<MajorScaleMode> Major = Parse("2-2-1-2-2-2-1").AsModal<MajorScaleMode>(TonalFamily.Major);
-        public static ModalScaleDefinition<NaturalMinorScaleMode> NaturalMinor = Parse("2-1-2-2-1-2-2").AsModal<NaturalMinorScaleMode>(TonalFamily.NaturalMinor);
+        // ReSharper disable InconsistentNaming        
+        protected static ScaleDefinition _major = new ScaleDefinition("major", 2, 2, 1, 2, 2, 2, 1);  
+        protected static ScaleDefinition _naturalMinor = new ScaleDefinition("natural minor", 2, 1, 2, 2, 1, 2, 2);
+        // ReSharper restore InconsistentNaming
+
+        public static ModalScaleDefinition<MajorScaleMode> Major = _major.AsModal<MajorScaleMode>(TonalFamily.Major);
+        public static ModalScaleDefinition<NaturalMinorScaleMode> NaturalMinor = _naturalMinor.AsModal<NaturalMinorScaleMode>(TonalFamily.NaturalMinor);
         public static ModalScaleDefinition<HarmonicMinorScaleMode> HarmonicMinor = Parse("2-1-2-2-1-3-1").AsModal<HarmonicMinorScaleMode>(TonalFamily.HarmonicMinor);
         public static ModalScaleDefinition<MelodicMinorScaleMode> MelodicMinor = Parse("2-1-2-2-2-2-1").AsModal<MelodicMinorScaleMode>(TonalFamily.MelodicMinor);
 
@@ -35,9 +40,6 @@ namespace GA.Domain.Music.Scales
         public static ScaleDefinition PentatonicMajor = "2-2-3-2-3";
         [Description("pentatonic minor")]
         public static ScaleDefinition PentatonicMinor = "3-2-2-3-2";
-        [Description("pentatonic minor (test)")]
-        public static ScaleDefinition PentatonicMinorTest = "W-W-m3-W-m3";
-
 
         // ReSharper disable PossibleMultipleEnumeration
         public ScaleDefinition(
@@ -49,9 +51,16 @@ namespace GA.Domain.Music.Scales
             if (totalDistance != 12) throw new ArgumentException($"Invalid scale definition - the sum of '{nameof(relativeSemitones)}' is {totalDistance} and must be equal to 12", nameof(relativeSemitones));
 
             ScaleName = scaleName;
-            IsMinor = Absolute.Contains(Quality.m3);
+            IsMinor = Absolute.Contains(3); // m3 interval
         }
         // ReSharper restore PossibleMultipleEnumeration
+
+        private ScaleDefinition(
+            string scaleName,
+            params int[] relativeSemitones) : base(relativeSemitones.Select(i => (Semitone)i))
+        {
+            ScaleName = scaleName;
+        }
 
         /// <summary>
         /// Gets the scale scaleName (Can be null).
@@ -63,6 +72,8 @@ namespace GA.Domain.Music.Scales
         /// Gets <see cref="string"/> that represents scale steps.
         /// </summary>
         public string Steps => base.ToString();
+
+        public IReadOnlyList<SemitoneQuality> Qualities => GetQualities();
 
         /// <summary>
         /// Gets a flag that indicates whether the scale is minor (Contains a minor 3rd).
@@ -93,11 +104,10 @@ namespace GA.Domain.Music.Scales
         /// <summary>
         /// Converts the string representation of a relative semitones list into its scale definition equivalent.
         /// </summary>
-        /// <param scaleName="s">The <see cref="string"/> represention of the semitone relative distances.</param>
+        /// <param paramname="s">The <see cref="string"/> represention of the semitone relative distances.</param>
         /// <returns>The <see cref="ScaleDefinition"/>.</returns>
         /// <exception cref="System.FormatException">Throw if the format is incorrect,</exception>
-        public static ScaleDefinition Parse(
-            string s)
+        public static ScaleDefinition Parse(string s)
         {
             var relativeSemitones = RelativeSemitoneList.Parse(s);
             var result = new ScaleDefinition(relativeSemitones);
@@ -124,7 +134,7 @@ namespace GA.Domain.Music.Scales
         /// <summary>
         /// Converrts a distances string into a scale definition.
         /// </summary>
-        /// <param scaleName="distances">The distance <see cref="string" /></param>
+        /// <param name="distances">The distance <see cref="string" /></param>
         /// <returns>The <see cref="ScaleDefinition" /> objects</returns>
         public static implicit operator ScaleDefinition(string distances)
         {
@@ -158,6 +168,14 @@ namespace GA.Domain.Music.Scales
             }
 
             var result = new ReadOnlyDictionary<string, ScaleDefinition>(dict);
+
+            return result;
+        }
+
+        private IReadOnlyList<SemitoneQuality> GetQualities()
+        {
+            var accidentalKind = AccidentalKind.Flat;
+            var result = new QualityList(Absolute, accidentalKind);
 
             return result;
         }

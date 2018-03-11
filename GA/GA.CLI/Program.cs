@@ -1,7 +1,7 @@
 ﻿using System;
-using GA.Domain.Extensions;
 using GA.Domain.Music.Intervals;
 using GA.Domain.Music.Keys;
+using GA.Domain.Music.Notes;
 using GA.Domain.Music.Scales;
 using GA.Domain.Music.Scales.Modes;
 
@@ -13,7 +13,9 @@ namespace GA.CLI
         {
             Console.WriteLine("Guitar Alchemist");
 
-            var a = MajorKey.Bb.GetRoot();
+            var Fb = new Note(DiatonicNote.F, Accidental.Flat);
+            var Eb = new Note(DiatonicNote.E, Accidental.Flat);
+            var d = Fb - Eb;
 
             var key = new Key(MajorKey.Bb);
             var root = key.Root;
@@ -24,9 +26,13 @@ namespace GA.CLI
 
             var allScales = ScaleDefinition.All;
             var major = ScaleDefinition.Major;
-            var dorian = ScaleDefinition.Major[MajorScaleMode.Dorian];
-            var isMinor = dorian.IsMinor;
-            var pentMinor = ScaleDefinition.PentatonicMinorTest.Steps;
+            var lydian = major[MajorScaleMode.Lydian];
+            var col = lydian.ColorTones;
+
+            //var a = major.Absolute;
+            //var b = lydian.Absolute;
+            //var colorTones = b.Except(a).ToList();
+            //var colorQualities = new QualityList(colorTones, AccidentalKind.Sharp);
         }
     }
 }

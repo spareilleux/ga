@@ -49,15 +49,17 @@ namespace GA.Domain.Music.Intervals
             _value = value;
         }
 
-        private Accidental(int value) : this((sbyte?)value)
+        public Accidental(int value) : this((sbyte?)value)
         {
         }
 
         /// <inheritdoc />
         public override int Distance => _value ?? 0;
 
-        /// <inheritdoc />
-        public override AccidentalKind? AccidentalKind => IsUnison ? null : base.AccidentalKind;
+        /// <summary>
+        /// Gets the <see cref="AccidentalKind"/>.
+        /// </summary>
+        public AccidentalKind? AccidentalKind => IsUnison ? null : (AccidentalKind?)Sign;
 
         /// <summary>
         /// Tries to convert a string into an accidental
@@ -218,7 +220,22 @@ namespace GA.Domain.Music.Intervals
         /// <returns>The sum of the two <see cref="Accidental" /> objects</returns>
         public static Accidental operator +(Accidental a, Accidental b)
         {
-            return new Accidental(a.Distance + b.Distance);
+            var result = new Accidental(a.Distance + b.Distance);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Subtracts two <see cref="Accidental" /> objects.
+        /// </summary>
+        /// <param name="a">The first <see cref="Accidental" /></param>
+        /// <param name="b">The second <see cref="Accidental" /></param>
+        /// <returns>The subtraction of the two <see cref="Accidental" /> objects</returns>
+        public static Accidental operator -(Accidental a, Accidental b)
+        {
+            var result = new Accidental(a.Distance - b.Distance);
+
+            return result;
         }
     }
 }

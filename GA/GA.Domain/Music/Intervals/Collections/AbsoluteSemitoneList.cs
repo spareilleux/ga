@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using GA.Core.Extensions;
 using GA.Domain.Music.Intervals.Metadata;
 using GA.Domain.Music.Intervals.Qualities;
 
@@ -14,7 +15,8 @@ namespace GA.Domain.Music.Intervals.Collections
     /// </summary>
     public class AbsoluteSemitoneList : ISemitones
     {
-        protected readonly IReadOnlyList<Semitone> AbsoluteSemitones;
+        private readonly ISet<Semitone> _absoluteSemitonesSet;
+        protected readonly IReadOnlyList<Semitone> AbsoluteSemitones;        
 
         /// <summary>
         /// Converts an absolute semitones list from its string representation.
@@ -34,26 +36,29 @@ namespace GA.Domain.Music.Intervals.Collections
             return result;
         }
 
+        public AbsoluteSemitoneList(IEnumerable<Semitone> semitones)
+            : this(semitones.Select(sb => (int)sb))
+        {
+        }
+
         public AbsoluteSemitoneList(params sbyte[] semitones)
             : this(semitones.Select(sb => (int)sb))
         {
         }
 
-        public AbsoluteSemitoneList(IEnumerable<Semitone> semitones)
-        {
-            AbsoluteSemitones = semitones.ToList().AsReadOnly();
+        public AbsoluteSemitoneList Rotate(int count)
+        {                                                            
+            var result = new AbsoluteSemitoneList(CombinatoricsExtensions.Rotate(this, count));
+
+            return result;
         }
 
         protected AbsoluteSemitoneList(IEnumerable<int> absoluteDistances)
         {
             AbsoluteSemitones = absoluteDistances.Select(d => (Semitone)d).ToList();
             Symmetry = new Symmetry(this);
+            _absoluteSemitonesSet = new SortedSet<Semitone>(AbsoluteSemitones).ToImmutableSortedSet();
         }
-
-        /// <summary>
-        /// Gets the <see cref="IImmutableSet{Semitone}"/>.
-        /// </summary>
-        public IImmutableSet<Semitone> Set => new SortedSet<Semitone>(AbsoluteSemitones).ToImmutableSortedSet();
 
         /// <summary>
         /// Gets <see cref="Symmetry"/>.
@@ -76,7 +81,7 @@ namespace GA.Domain.Music.Intervals.Collections
 
         public bool Contains(Semitone item)
         {
-            var result = Set.Contains(item);
+            var result = _absoluteSemitonesSet.Contains(item);
 
             return result;
         }
@@ -110,7 +115,7 @@ namespace GA.Domain.Music.Intervals.Collections
         {
             s = s?.Trim();
             if (Semitone.TryParse(s, out var semitone)) return semitone;
-            if (Quality.TryParse(s, out var quality)) return quality;
+            if (SemitoneQuality.TryParse(s, out var quality)) return quality;
 
             throw new InvalidOperationException($"Failed parsing '{s}' into {nameof(Semitone)}");
         }

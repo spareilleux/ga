@@ -2,65 +2,118 @@
 using System.Collections.Generic;
 using GA.Domain.Music.Intervals.Metadata;
 using GA.Domain.Music.Intervals.Qualities;
+using GA.Domain.Music.Scales;
 
 namespace GA.Domain.Music.Intervals
 {
     /// <inheritdoc />
     /// <summary>
-    /// Interval (Chronatic)
+    /// Chromatic interval.
     /// </summary>
     /// <see href="http://en.wikipedia.org/wiki/Chromatic_interval#Intervals" />
     public class Interval : Semitone
-    {
-        // ReSharper disable InconsistentNaming
-        public static readonly Interval P1 = (Interval)0;
-        public static readonly Interval m2 = (Interval)1;
-        public static readonly Interval A1 = (Interval)1;
-        public static readonly Interval M2 = (Interval)2;
-        public static readonly Interval d3 = (Interval)2;
-        public static readonly Interval m3 = (Interval)3;
-        public static readonly Interval A2 = (Interval)3;
-        public static readonly Interval M3 = (Interval)4;
-        public static readonly Interval d4 = (Interval)4;
-        public static readonly Interval P4 = (Interval)5;
-        public static readonly Interval A3 = (Interval)5;
-        public static readonly Interval A4 = (Interval)6;
-        public static readonly Interval d5 = (Interval)6;
-        public static readonly Interval P5 = (Interval)7;
-        public static readonly Interval d6 = (Interval)7;
-        public static readonly Interval m6 = (Interval)8;
-        public static readonly Interval A5 = (Interval)8;
-        public static readonly Interval M6 = (Interval)9;
-        public static readonly Interval d7 = (Interval)9;
-        public static readonly Interval m7 = (Interval)10;
-        public static readonly Interval A6 = (Interval)10;
-        public static readonly Interval M7 = (Interval)11;
-        public static readonly Interval d8 = (Interval)11;
+    {     
+        public static class Perfect
+        {
+            public static readonly Interval Unison = GetInterval(1);
+            public static readonly Interval Fourth = GetInterval(4);
+            public static readonly Interval Fifth = GetInterval(5);
+            public static readonly Interval Octave = GetInterval(8);
+        }
 
-        public static readonly Interval m9 = (Interval)13;
-        public static readonly Interval A8 = (Interval)13;
-        public static readonly Interval M9 = (Interval)14;
-        public static readonly Interval d10 = (Interval)14;
-        public static readonly Interval A9 = (Interval)15;
-        public static readonly Interval m10 = (Interval)15;
-        public static readonly Interval M10 = (Interval)16;
-        public static readonly Interval d11 = (Interval)16;
-        public static readonly Interval P11 = (Interval)17;
-        public static readonly Interval A10 = (Interval)17;
-        public static readonly Interval A11 = (Interval)18;
-        public static readonly Interval d12 = (Interval)18;
-        public static readonly Interval P12 = (Interval)19;
-        public static readonly Interval d13 = (Interval)19;
-        public static readonly Interval m13 = (Interval)20;
-        public static readonly Interval A12 = (Interval)20;
-        public static readonly Interval M13 = (Interval)21;
-        public static readonly Interval d14 = (Interval)21;
-        public static readonly Interval m14 = (Interval)22;
-        public static readonly Interval A13 = (Interval)22;
-        public static readonly Interval M14 = (Interval)23;
+        public static class Imperfect
+        {
+            public static readonly Interval Second = GetInterval(2);
+            public static readonly Interval Third = GetInterval(3);
+            public static readonly Interval Sixth = GetInterval(6);
+            public static readonly Interval Seventh = GetInterval(7);
+        }
+
+
+        public static class Major
+        {
+            public static readonly Interval Second = Imperfect.Second;
+            public static readonly Interval Third = Imperfect.Third;
+            public static readonly Interval Sixth = Imperfect.Sixth;
+            public static readonly Interval Seventh = Imperfect.Seventh;
+        }
+
+        public static class Minor
+        {
+            public static readonly Interval Second = (int)Major.Second - 1;
+            public static readonly Interval Third = (int)Major.Third - 1;
+            public static readonly Interval Sixth = (int)Major.Sixth - 1;
+            public static readonly Interval Seventh = (int)Major.Seventh - 1;
+        }
+
+        public static class Dim
+        {
+            public static readonly Interval Second = (int)Minor.Second - 1;
+            public static readonly Interval Third = (int)Minor.Third - 1;
+            public static readonly Interval Sixth = (int)Minor.Sixth - 1;
+            public static readonly Interval Seventh = (int)Minor.Seventh - 1;
+        }
+
+        public static class Aug
+        {
+            public static readonly Interval Second = (int)Major.Second + 1;
+            public static readonly Interval Third = (int)Major.Third + 1;
+            public static readonly Interval Sixth = (int)Major.Sixth + 1;
+            public static readonly Interval Seventh = (int)Major.Seventh + 1;
+        }
+
+        // ReSharper disable InconsistentNaming
+        public new static readonly Interval Unison = Perfect.Unison;
+        public static readonly Interval P1 = Unison;
+        public static readonly Interval m2 = Minor.Second;
+        public static readonly Interval A1 = 1;
+        public static readonly Interval M2 = Major.Second;
+        public static readonly Interval d3 = 2;
+        public static readonly Interval m3 = Minor.Third;
+        public static readonly Interval A2 = 3;
+        public static readonly Interval M3 = Major.Third;
+        public static readonly Interval d4 = 4;
+        public static readonly Interval P4 = Perfect.Fourth;
+        public static readonly Interval A3 = 5;
+        public static readonly Interval A4 = 6;
+        public static readonly Interval d5 = 6;
+        public static readonly Interval P5 = Perfect.Fifth;
+        public static readonly Interval d6 = 7;
+        public static readonly Interval m6 = Minor.Sixth;
+        public static readonly Interval A5 = 8;
+        public static readonly Interval M6 = Major.Sixth;
+        public static readonly Interval d7 = 9;
+        public static readonly Interval m7 = Minor.Seventh;
+        public static readonly Interval A6 = 10;
+        public static readonly Interval M7 = Major.Seventh;
+        public static readonly Interval d8 = 11;
+        public new static readonly Interval Octave = Perfect.Octave;
+
+
+        public static readonly Interval m9 = 13;
+        public static readonly Interval A8 = 13;
+        public static readonly Interval M9 = 14;
+        public static readonly Interval d10 = 14;
+        public static readonly Interval A9 = 15;
+        public static readonly Interval m10 = 15;
+        public static readonly Interval M10 = 16;
+        public static readonly Interval d11 = 16;
+        public static readonly Interval P11 = 17;
+        public static readonly Interval A10 = 17;
+        public static readonly Interval A11 = 18;
+        public static readonly Interval d12 = 18;
+        public static readonly Interval P12 = 19;
+        public static readonly Interval d13 = 19;
+        public static readonly Interval m13 = 20;
+        public static readonly Interval A12 = 20;
+        public static readonly Interval M13 = 21;
+        public static readonly Interval d14 = 21;
+        public static readonly Interval m14 = 22;
+        public static readonly Interval A13 = 22;
+        public static readonly Interval M14 = 23;
         // ReSharper restore InconsistentNaming
 
-        private static readonly string[] _description =
+        private static readonly string[] _names =
             {
                 "1", "b2", "2", "b3", "3", "4", "b5", "5", "b6", "6", "b7", "7", "8",
                 "b9", "9", "#9", "10", "11", "#11", "12", "b13", "13", "b14", "14"
@@ -124,21 +177,34 @@ namespace GA.Domain.Music.Intervals
         }
 
         /// <summary>
-        /// Returns the corresponding Quality
+        /// Returns the corresponding SemitoneQuality
         /// </summary>
-        public Quality ToQuality(AccidentalKind accidentalKind)
+        public SemitoneQuality ToQuality(AccidentalKind accidentalKind)
         {
-            var result = 
-                accidentalKind == Intervals.AccidentalKind.Flat 
-                    ? (Quality)FlatQuality.FromSemitone(this)
-                    : SharpQuality.FromSemitone(this);
+            var result =
+                accidentalKind == AccidentalKind.Flat
+                    ? SemitoneQuality.GetFlat(this)
+                    : SemitoneQuality.GetSharp(this);
+
+            return result;
+        }
+
+        private static Interval GetInterval(int index)
+        {
+            var distance = ScaleDefinition.Major.Absolute[index - 1];
+            var result = new Interval(distance);
 
             return result;
         }
 
         public override string ToString()
         {
-            return _description[DoubleOctaveDistance];
+            return _names[DoubleOctaveDistance];
+        }
+
+        public static implicit operator Interval(int distance)
+        {
+            return new Interval(distance);
         }
 
         public static Interval operator ++(Interval interval)

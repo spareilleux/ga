@@ -21,9 +21,9 @@ namespace GA.Domain.Music.Intervals
         }
 
         /// <summary>
-        /// Gets the <see cref="AccidentalKind"/>.
+        /// Gets the <see cref="Int32"/> sign.
         /// </summary>
-        public virtual AccidentalKind? AccidentalKind => (AccidentalKind)Math.Sign(Distance);
+        public int Sign => Math.Sign(Distance);
 
         /// <summary>
         /// Gets the distance in semitones (Signed).
@@ -52,12 +52,12 @@ namespace GA.Domain.Music.Intervals
         /// <summary>
         /// True if below one octave.
         /// </summary>
-        public bool IsSimple => Octave == 1;
+        public bool IsSimple => AbsoluteDistance > 0 && AbsoluteDistance < 12;
 
         /// <summary>
         /// True if over one octave.
         /// </summary>
-        public bool IsCompound => AbsoluteDistance >= 12;
+        public bool IsCompound => AbsoluteDistance >= 12 && AbsoluteDistance < 24;
 
         /// <summary>
         /// Gets the octave from the current semitone.
@@ -339,14 +339,14 @@ namespace GA.Domain.Music.Intervals
 
             public bool Equals(Semitone x, Semitone y)
             {
-                var result = x.SingleOctaveDistance == y.SingleOctaveDistance;
+                var result = x.DoubleOctaveDistance == y.DoubleOctaveDistance;
 
                 return result;
             }
 
             public int GetHashCode(Semitone obj)
             {
-                return obj.SingleOctaveDistance;
+                return obj.DoubleOctaveDistance;
             }
 
             public override string ToString()

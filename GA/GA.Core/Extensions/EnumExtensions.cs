@@ -56,5 +56,54 @@ namespace GA.Core.Extensions
                     return enumValue;
             return null;
         }
+
+        public static T Next<T>(this T enumValue)
+            where T : struct
+        {
+            if (!typeof(T).IsEnum) throw new ArgumentException($"Parameter '{nameof(enumValue)}' is not an Enum", nameof(enumValue));
+
+            var array = (T[])Enum.GetValues(enumValue.GetType());
+            var index = Array.IndexOf(array, enumValue) + 1;
+
+            var result = array.Length == index ? array[0] : array[index];
+
+            return result;
+        }
+
+        public static T Invert<T>(this T enumValue)
+            where T : struct
+        {
+            if (!typeof(T).IsEnum) throw new ArgumentException($"Parameter '{nameof(enumValue)}' is not an Enum", nameof(enumValue));
+
+            var array = (T[])Enum.GetValues(enumValue.GetType());
+            var index = Array.IndexOf(array, enumValue);
+            index = array.Length - index;
+
+            var result = array[index];
+
+            return result;
+        }
+
+        public static int DistanceFrom<T>(this T enumValue, T fromEnumValue)
+            where T : struct
+        {
+            if (!typeof(T).IsEnum) throw new ArgumentException($"Parameter '{nameof(enumValue)}' is not an Enum", nameof(enumValue));
+
+            var array = (T[])Enum.GetValues(enumValue.GetType());
+            var indexTo = Array.IndexOf(array, enumValue);
+            var indexFrom = Array.IndexOf(array, fromEnumValue);
+
+            var result = indexTo - indexFrom;
+
+            return result;
+        }
+
+        public static int DistanceTo<T>(this T enumValue, T toEnumValue)
+            where T : struct
+        {
+            var result = -DistanceFrom(enumValue, toEnumValue);
+
+            return result;
+        }
     }
 }

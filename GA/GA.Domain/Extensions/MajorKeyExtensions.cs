@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GA.Core.Extensions;
+using GA.Domain.Music.Intervals;
 using GA.Domain.Music.Keys;
 using GA.Domain.Music.Notes;
 
@@ -26,6 +27,20 @@ namespace GA.Domain.Extensions
         public static Note GetRoot(this MajorKey majorKey)
         {
             var result = _majorKeyNotes[majorKey];
+
+            return result;
+        }
+
+        public static AccidentalKind GetAccidentalKind(this MajorKey majorKey)
+        {
+            var result = majorKey < MajorKey.C ? AccidentalKind.Flat : AccidentalKind.Sharp;
+
+            return result;
+        }
+
+        public static AccidentalKind GetAccidentalKind(this MinorKey minorKey)
+        {
+            var result = minorKey < MinorKey.Am ? AccidentalKind.Flat : AccidentalKind.Sharp;
 
             return result;
         }

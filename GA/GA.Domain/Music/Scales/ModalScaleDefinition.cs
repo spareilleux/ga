@@ -33,17 +33,10 @@ namespace GA.Domain.Music.Scales
         /// </summary>
         /// <param name="modeIndex">The mode index (0-based).</param>
         /// <returns>The <see cref="ModeDefinition"/>.</returns>
-        public new ModeDefinition this[int modeIndex] => GetMode(modeIndex);
-
-        /// <summary>
-        /// Gets the mode definition.
-        /// </summary>
-        /// <param name="modeIndex">The mode index (0-based).</param>
-        /// <returns>The <see cref="ModeDefinition"/>.</returns>
         private ModeDefinition GetMode(int modeIndex)
         {
             var modeName = $"Mode #{modeIndex + 1} of {ScaleName}";
-            var relativeSemitones = this.Rotate(modeIndex + 1);
+            var relativeSemitones = this.Rotate(modeIndex);
             var sum = (Semitone)this.Take(modeIndex).Sum(s => s);
             var result = new ModeDefinition(
                 relativeSemitones,
@@ -94,7 +87,7 @@ namespace GA.Domain.Music.Scales
             var scaleMode = (Enum)Enum.Parse(typeof(TScaleMode), mode.ToString());
             var modeIndex = (int)Convert.ChangeType(scaleMode, TypeCode.Int32) - 1;
             var modeName = $"{scaleMode.GetFieldDescription()} mode (Mode #{modeIndex + 1} of {ScaleName} scale)";
-            var relativeSemitones = this.Rotate(modeIndex + 1);
+            var relativeSemitones = this.Rotate(modeIndex);
             var sum = (Semitone)this.Take(modeIndex).Sum(s => s);
             var result = new ModeDefinition(
                 relativeSemitones,

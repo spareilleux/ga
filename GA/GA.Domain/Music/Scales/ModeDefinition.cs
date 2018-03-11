@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GA.Domain.Music.Intervals;
+using GA.Domain.Music.Intervals.Collections;
 
 namespace GA.Domain.Music.Scales
 {
@@ -21,6 +23,7 @@ namespace GA.Domain.Music.Scales
             DistanceFromParentScale = distanceFromParentScale;
             ModeName = modeName;
             ModeIndex = modeIndex;
+            //ColorTones = GetColorTones();
         }
 
         /// <summary>
@@ -43,9 +46,20 @@ namespace GA.Domain.Music.Scales
         /// </summary>
         public int ModeIndex { get; }
 
+        public QualityList ColorTones { get; }
+
         public override string ToString()
         {
             return $"{base.ToString()} - {ModeName}}}";
         }
+
+        //private QualityList GetColorTones()
+        //{            
+        //    var colorTones = Absolute.Except(_major.Absolute).ToList();
+        //    // var accidentalKind = 
+        //    var result = new QualityList(colorTones, AccidentalKind.Sharp);
+
+        //    return result;
+        //}
     }
 }
