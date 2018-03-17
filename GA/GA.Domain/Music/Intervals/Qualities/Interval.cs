@@ -1,242 +1,242 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using GA.Core.Extensions;
+using GA.Domain.Music.Scales;
 
 namespace GA.Domain.Music.Intervals.Qualities
 {
     /// <inheritdoc cref="Semitone" />
     /// <summary>
-    /// Interval semitoneQuality.
+    /// ChromaticInterval interval.
     /// </summary>
-    /// <see href="http://www.theguitarsuite.com/Theory/Intervals.html" />
-    public class SemitoneQuality : Semitone, IComparable<SemitoneQuality>, IEquatable<SemitoneQuality>
+    /// <see href="http://www.theguitarsuite.com/Theory/Intervals.html" />.
+    public class Interval : ChromaticInterval, IComparable<Interval>, IEquatable<Interval>
     {
-        private static readonly IDictionary<int, SemitoneQuality> _flatQualityByDistance;
-        private static readonly IDictionary<int, SemitoneQuality> _sharpQualityByDistance;
+        private static readonly IDictionary<int, Interval> _flatIntervalByDistance;
+        private static readonly IDictionary<int, Interval> _sharpIntervalByDistance;
 
-        public static IEqualityComparer<SemitoneQuality> EnharmonicEqualityComparer => EnharmonicComparer.Instance;
+        public static IEqualityComparer<Interval> EnharmonicEqualityComparer => EnharmonicComparer.Instance;
 
         /// <summary>
         /// Gets the scale definitions indexed by field name.
         /// </summary>
-        public static IReadOnlyDictionary<string, SemitoneQuality> ByFieldName;
+        public static IReadOnlyDictionary<string, Interval> ByFieldName;
 
         /// <summary>
         /// Gets the qualities indexed by name.
         /// </summary>
-        public static IReadOnlyDictionary<string, SemitoneQuality> ByName;
+        public static IReadOnlyDictionary<string, Interval> ByName;
 
         /// <summary>
         /// Gets all qualities.
         /// </summary>
-        public static IReadOnlyList<SemitoneQuality> All;
+        public static IReadOnlyList<Interval> All;
 
-        public static SemitoneQuality GetFlat(Semitone semitone)
+        public static Interval GetFlat(Semitone semitone)
         {
-            _flatQualityByDistance.TryGetValue(semitone, out var result);
+            _flatIntervalByDistance.TryGetValue(semitone, out var result);
 
             return result;
         }
 
-        public static SemitoneQuality GetSharp(Semitone semitone)
+        public static Interval GetSharp(Semitone semitone)
         {
-            _sharpQualityByDistance.TryGetValue(semitone, out var result);
+            _sharpIntervalByDistance.TryGetValue(semitone, out var result);
 
             return result;
         }
 
         // ReSharper disable InconsistentNaming
-        static SemitoneQuality()
+        static Interval()
         {
-            var fieldInfos = typeof(SemitoneQuality)
+            var fieldInfos = typeof(Interval)
                 .GetFields(BindingFlags.Public | BindingFlags.Static)
-                .Where(fi => typeof(SemitoneQuality).IsAssignableFrom(fi.FieldType))
+                .Where(fi => typeof(Interval).IsAssignableFrom(fi.FieldType))
                 .ToList().AsReadOnly();
 
             ByFieldName = GetQualitiesByFieldName(fieldInfos);
             ByName = GetQualitiesByName(fieldInfos);
             All = ByName.Values.ToList().AsReadOnly();
 
-            _flatQualityByDistance = Index(AccidentalKind.Flat);
-            _sharpQualityByDistance = Index(AccidentalKind.Sharp);
+            _flatIntervalByDistance = Index(AccidentalKind.Flat);
+            _sharpIntervalByDistance = Index(AccidentalKind.Sharp);
         }
 
         #region Values
 
         /// <summary>
-        /// Perfect unison semitoneQuality
+        /// Perfect unison interval
         /// </summary>
-        public static readonly SemitoneQuality P1 = new SemitoneQuality(DiatonicInterval.Unison, Accidental.None);
+        public new static readonly Interval P1 = new Interval(DiatonicInterval.Unison, Accidental.None);
 
         /// <summary>
-        /// Augmented unison semitoneQuality
+        /// Augmented unison interval
         /// </summary>
-        public static readonly SemitoneQuality A1 = new SemitoneQuality(DiatonicInterval.Unison, Accidental.Sharp);
+        public new static readonly Interval A1 = new Interval(DiatonicInterval.Unison, Accidental.Sharp);
 
         /// <summary>
-        /// Minor second semitoneQuality
+        /// Minor second interval
         /// </summary>
-        public static readonly SemitoneQuality m2 = new SemitoneQuality(DiatonicInterval.Second, Accidental.Flat);
+        public new static readonly Interval m2 = new Interval(DiatonicInterval.Second, Accidental.Flat);
 
         /// <summary>
-        /// Major second semitoneQuality
+        /// Major second interval
         /// </summary>
-        public static readonly SemitoneQuality M2 = new SemitoneQuality(DiatonicInterval.Second);
+        public new static readonly Interval M2 = new Interval(DiatonicInterval.Second);
 
         /// <summary>
-        /// Augmented second semitoneQuality
+        /// Augmented second interval
         /// </summary>
-        public static readonly SemitoneQuality A2 = new SemitoneQuality(DiatonicInterval.Second, Accidental.Sharp);
+        public new static readonly Interval A2 = new Interval(DiatonicInterval.Second, Accidental.Sharp);
 
         /// <summary>
-        /// Minor third semitoneQuality
+        /// Minor third interval
         /// </summary>
-        public static readonly SemitoneQuality d3 = new SemitoneQuality(DiatonicInterval.Third, Accidental.DoubleFlat);
+        public new static readonly Interval d3 = new Interval(DiatonicInterval.Third, Accidental.DoubleFlat);
 
         /// <summary>
-        /// Minor third semitoneQuality
+        /// Minor third interval
         /// </summary>
-        public static readonly SemitoneQuality m3 = new SemitoneQuality(DiatonicInterval.Third, Accidental.Flat);
+        public new static readonly Interval m3 = new Interval(DiatonicInterval.Third, Accidental.Flat);
 
         /// <summary>
-        /// Major thirs semitoneQuality
+        /// Major thirs interval
         /// </summary>
-        public static readonly SemitoneQuality M3 = new SemitoneQuality(DiatonicInterval.Third);
+        public new static readonly Interval M3 = new Interval(DiatonicInterval.Third);
 
         /// <summary>
-        /// Major thirs semitoneQuality
+        /// Major thirs interval
         /// </summary>
-        public static readonly SemitoneQuality A3 = new SemitoneQuality(DiatonicInterval.Third, Accidental.Sharp);
+        public new static readonly Interval A3 = new Interval(DiatonicInterval.Third, Accidental.Sharp);
 
         /// <summary>
-        /// Diminished fourth semitoneQuality
+        /// Diminished fourth interval
         /// </summary>
-        public static readonly SemitoneQuality d4 = new SemitoneQuality(DiatonicInterval.Fourth, Accidental.Flat);
+        public new static readonly Interval d4 = new Interval(DiatonicInterval.Fourth, Accidental.Flat);
 
         /// <summary>
-        /// Perfect fourth semitoneQuality
+        /// Perfect fourth interval
         /// </summary>
-        public static readonly SemitoneQuality P4 = new SemitoneQuality(DiatonicInterval.Fourth);
+        public new static readonly Interval P4 = new Interval(DiatonicInterval.Fourth);
 
         /// <summary>
-        /// Augmented fourth semitoneQuality
+        /// Augmented fourth interval
         /// </summary>
-        public static readonly SemitoneQuality A4 = new SemitoneQuality(DiatonicInterval.Fourth, Accidental.Sharp);
+        public new static readonly Interval A4 = new Interval(DiatonicInterval.Fourth, Accidental.Sharp);
 
         /// <summary>
-        /// Diminished fifth semitoneQuality
+        /// Diminished fifth interval
         /// </summary>
-        public static readonly SemitoneQuality d5 = new SemitoneQuality(DiatonicInterval.Fifth, Accidental.Flat);
+        public new static readonly Interval d5 = new Interval(DiatonicInterval.Fifth, Accidental.Flat);
 
         /// <summary>
-        /// Perfect fifth semitoneQuality
+        /// Perfect fifth interval
         /// </summary>
-        public static readonly SemitoneQuality P5 = new SemitoneQuality(DiatonicInterval.Fifth);
+        public new static readonly Interval P5 = new Interval(DiatonicInterval.Fifth);
 
         /// <summary>
-        /// Augmented fifth semitoneQuality
+        /// Augmented fifth interval
         /// </summary>
-        public static readonly SemitoneQuality A5 = new SemitoneQuality(DiatonicInterval.Fifth, Accidental.Sharp);
+        public new static readonly Interval A5 = new Interval(DiatonicInterval.Fifth, Accidental.Sharp);
 
         /// <summary>
-        /// Minor sixth semitoneQuality
+        /// Minor sixth interval
         /// </summary>
-        public static readonly SemitoneQuality m6 = new SemitoneQuality(DiatonicInterval.Sixth, Accidental.Flat);
+        public new static readonly Interval m6 = new Interval(DiatonicInterval.Sixth, Accidental.Flat);
 
         /// <summary>
         /// Major sixth intervalQuality
         /// </summary>
-        public static readonly SemitoneQuality M6 = new SemitoneQuality(DiatonicInterval.Sixth);
+        public new static readonly Interval M6 = new Interval(DiatonicInterval.Sixth);
 
         /// <summary>
-        /// Augmented sixth semitoneQuality
+        /// Augmented sixth interval
         /// </summary>
-        public static readonly SemitoneQuality A6 = new SemitoneQuality(DiatonicInterval.Sixth, Accidental.Sharp);
+        public new static readonly Interval A6 = new Interval(DiatonicInterval.Sixth, Accidental.Sharp);
 
         /// <summary>
-        /// Diminished seventh semitoneQuality
+        /// Diminished seventh interval
         /// </summary>
-        public static readonly SemitoneQuality d7 = new SemitoneQuality(DiatonicInterval.Seventh, Accidental.DoubleFlat);
+        public new static readonly Interval d7 = new Interval(DiatonicInterval.Seventh, Accidental.DoubleFlat);
 
         /// <summary>
-        /// Minor seventh semitoneQuality
+        /// Minor seventh interval
         /// </summary>
-        public static readonly SemitoneQuality m7 = new SemitoneQuality(DiatonicInterval.Seventh, Accidental.Flat);
+        public new static readonly Interval m7 = new Interval(DiatonicInterval.Seventh, Accidental.Flat);
 
         /// <summary>
-        /// Major seventh semitoneQuality
+        /// Major seventh interval
         /// </summary>
-        public static readonly SemitoneQuality M7 = new SemitoneQuality(DiatonicInterval.Seventh);
+        public new static readonly Interval M7 = new Interval(DiatonicInterval.Seventh);
 
         /// <summary>
-        /// Octave semitoneQuality
+        /// Octave interval
         /// </summary>
-        public static readonly SemitoneQuality P8 = new SemitoneQuality(DiatonicInterval.Octave);
+        public static readonly Interval P8 = new Interval(DiatonicInterval.Octave);
 
         /// <summary>
-        /// Minor ninth semitoneQuality
+        /// Minor ninth interval
         /// </summary>
-        public static readonly SemitoneQuality m9 = new SemitoneQuality(DiatonicInterval.Ninth, Accidental.Flat);
+        public new static readonly Interval m9 = new Interval(DiatonicInterval.Ninth, Accidental.Flat);
 
         /// <summary>
-        /// Major ninth semitoneQuality
+        /// Major ninth interval
         /// </summary>
-        public static readonly SemitoneQuality M9 = new SemitoneQuality(DiatonicInterval.Ninth);
+        public new static readonly Interval M9 = new Interval(DiatonicInterval.Ninth);
 
         /// <summary>
-        /// Augmented ninth semitoneQuality
+        /// Augmented ninth interval
         /// </summary>
-        public static readonly SemitoneQuality A9 = new SemitoneQuality(DiatonicInterval.Ninth, Accidental.Sharp);
+        public new static readonly Interval A9 = new Interval(DiatonicInterval.Ninth, Accidental.Sharp);
 
         /// <summary>
-        /// Minor tenth semitoneQuality
+        /// Minor tenth interval
         /// </summary>
-        public static readonly SemitoneQuality m10 = new SemitoneQuality(DiatonicInterval.Tenth, Accidental.Flat);
+        public new static readonly Interval m10 = new Interval(DiatonicInterval.Tenth, Accidental.Flat);
 
         /// <summary>
-        /// Major tenth semitoneQuality
+        /// Major tenth interval
         /// </summary>
-        public static readonly SemitoneQuality M10 = new SemitoneQuality(DiatonicInterval.Tenth);
+        public new static readonly Interval M10 = new Interval(DiatonicInterval.Tenth);
 
         /// <summary>
-        /// Perfect eleventh semitoneQuality
+        /// Perfect eleventh interval
         /// </summary>
-        public static readonly SemitoneQuality P11 = new SemitoneQuality(DiatonicInterval.Eleventh);
+        public new static readonly Interval P11 = new Interval(DiatonicInterval.Eleventh);
 
         /// <summary>
-        /// Augmented eleventh semitoneQuality
+        /// Augmented eleventh interval
         /// </summary>
-        public static readonly SemitoneQuality A11 = new SemitoneQuality(DiatonicInterval.Eleventh, Accidental.Sharp);
+        public new static readonly Interval A11 = new Interval(DiatonicInterval.Eleventh, Accidental.Sharp);
 
         /// <summary>
-        /// Perfect twelfth semitoneQuality
+        /// Perfect twelfth interval
         /// </summary>
-        public static readonly SemitoneQuality P12 = new SemitoneQuality(DiatonicInterval.Twelfth);
+        public new static readonly Interval P12 = new Interval(DiatonicInterval.Twelfth);
 
         /// <summary>
-        /// Minor thirteenth semitoneQuality
+        /// Minor thirteenth interval
         /// </summary>
-        public static readonly SemitoneQuality m13 = new SemitoneQuality(DiatonicInterval.Thirteenth, Accidental.Flat);
+        public new static readonly Interval m13 = new Interval(DiatonicInterval.Thirteenth, Accidental.Flat);
 
         /// <summary>
-        /// Major thirteenth semitoneQuality
+        /// Major thirteenth interval
         /// </summary>
-        public static readonly SemitoneQuality M13 = new SemitoneQuality(DiatonicInterval.Thirteenth);
+        public new static readonly Interval M13 = new Interval(DiatonicInterval.Thirteenth);
 
         /// <summary>
-        /// Minor fourteenth semitoneQuality
+        /// Minor fourteenth interval
         /// </summary>
-        public static readonly SemitoneQuality m14 = new SemitoneQuality(DiatonicInterval.Fourteenth, Accidental.Flat);
+        public new static readonly Interval m14 = new Interval(DiatonicInterval.Fourteenth, Accidental.Flat);
 
         /// <summary>
-        /// Major fourteenth semitoneQuality
+        /// Major fourteenth interval
         /// </summary>
-        public static readonly SemitoneQuality M14 = new SemitoneQuality(DiatonicInterval.Fourteenth);
+        public new static readonly Interval M14 = new Interval(DiatonicInterval.Fourteenth);
 
         // ReSharper restore InconsistentNaming
 
@@ -247,7 +247,7 @@ namespace GA.Domain.Music.Intervals.Qualities
         /// </summary>
         /// <param name="accidentalKind">The <see cref="AccidentalKind"/>.</param>
         /// <returns></returns>
-        private static IDictionary<int, SemitoneQuality> Index(AccidentalKind accidentalKind)
+        private static IDictionary<int, Interval> Index(AccidentalKind accidentalKind)
         {
             var qualities = All.Where(quality => quality.Accidental == null ||
                                                  quality.Accidental.AccidentalKind == accidentalKind &&
@@ -256,7 +256,7 @@ namespace GA.Domain.Music.Intervals.Qualities
                 .ThenBy(quality => quality.Accidental.AbsoluteDistance)
                 .ToList();
 
-            var result = new Dictionary<int, SemitoneQuality>();
+            var result = new Dictionary<int, Interval>();
             var groups = qualities.GroupBy(quality => quality.Distance);
             foreach (var group in groups)
             {
@@ -267,16 +267,16 @@ namespace GA.Domain.Music.Intervals.Qualities
             return result;
         }
 
-        private static IReadOnlyDictionary<string, SemitoneQuality> GetQualitiesByFieldName(IEnumerable<FieldInfo> fields)
+        private static IReadOnlyDictionary<string, Interval> GetQualitiesByFieldName(IEnumerable<FieldInfo> fields)
         {
-            var dict = new Dictionary<string, SemitoneQuality>(StringComparer.Ordinal);
+            var dict = new Dictionary<string, Interval>(StringComparer.Ordinal);
             foreach (var field in fields)
             {
-                var quality = (SemitoneQuality)field.GetValue(null);
+                var quality = (Interval)field.GetValue(null);
                 dict[field.Name] = quality; // e.g. "m3"
             }
 
-            var result = new ReadOnlyDictionary<string, SemitoneQuality>(dict);
+            var result = new ReadOnlyDictionary<string, Interval>(dict);
 
             return result;
         }
@@ -284,22 +284,22 @@ namespace GA.Domain.Music.Intervals.Qualities
         /// <summary>
         /// Gets qualities definitions, indexed by name.
         /// </summary>
-        private static IReadOnlyDictionary<string, SemitoneQuality> GetQualitiesByName(IEnumerable<FieldInfo> fields)
+        private static IReadOnlyDictionary<string, Interval> GetQualitiesByName(IEnumerable<FieldInfo> fields)
         {
-            var dict = new Dictionary<string, SemitoneQuality>(StringComparer.Ordinal);
+            var dict = new Dictionary<string, Interval>(StringComparer.Ordinal);
             foreach (var field in fields)
             {
-                var quality = (SemitoneQuality)field.GetValue(null);
+                var quality = (Interval)field.GetValue(null);
                 dict[quality.ToString()] = quality; // e.g. "b3"
             }
 
-            var result = new ReadOnlyDictionary<string, SemitoneQuality>(dict);
+            var result = new ReadOnlyDictionary<string, Interval>(dict);
 
             return result;
         }
 
-        private static readonly Dictionary<SemitoneQuality, string> _fullname =
-            new Dictionary<SemitoneQuality, string>
+        private static readonly Dictionary<Interval, string> _fullname =
+            new Dictionary<Interval, string>
             {
                 {P1, "perfect unison"},
                 {A1, "augmented unison"},
@@ -334,25 +334,25 @@ namespace GA.Domain.Music.Intervals.Qualities
                 {M14, "major 14th"}
             };
 
-        private static readonly ILookup<SemitoneQuality, SemitoneQuality> _enharmonics = GetEnharmonicsLookup();
+        private static readonly ILookup<Interval, Interval> _enharmonics = GetEnharmonicsLookup();
 
-        public SemitoneQuality(int distance)
+        public Interval(int distance)
             : base(distance)
         {
         }
 
-        public SemitoneQuality(DiatonicInterval diatonicInterval)
+        public Interval(DiatonicInterval diatonicInterval)
             : this(diatonicInterval, Accidental.None)
         {
         }
 
-        public SemitoneQuality(
+        public Interval(
             DiatonicInterval diatonicInterval,
-            Accidental accidental) : base((int)diatonicInterval + accidental.Distance)
+            Accidental accidental) : base(GetDistance(diatonicInterval, accidental))
         {
             DiatonicInterval = diatonicInterval;
             Accidental = accidental;
-            Name = string.Format(CultureInfo.InvariantCulture, "{0}{1}", Accidental, (int)DiatonicInterval);
+            Name = $"{Accidental}{(int) diatonicInterval}";
         }
 
         public DiatonicInterval DiatonicInterval { get; }
@@ -360,12 +360,12 @@ namespace GA.Domain.Music.Intervals.Qualities
         public string Name { get; }
 
         /// <summary>
-        /// Gets the enharmonic <see cref="IReadOnlyCollection{SemitoneQuality}"/>
+        /// Gets the enharmonic <see cref="IReadOnlyCollection{Interval}"/>
         /// </summary>
-        public IReadOnlyCollection<SemitoneQuality> Enharmonics => _enharmonics[this].ToList().AsReadOnly();
+        public IReadOnlyCollection<Interval> Enharmonics => _enharmonics[this].ToList().AsReadOnly();
 
         /// <summary>
-        /// Gets the full name of the <see cref="SemitoneQuality" />
+        /// Gets the full name of the <see cref="Interval" />
         /// </summary>
         public string FullName
         {
@@ -377,30 +377,30 @@ namespace GA.Domain.Music.Intervals.Qualities
         }
 
         /// <summary>
-        /// Try to convert a string into an accidented diatonic semitoneQuality
+        /// Try to convert a string into an accidented diatonic interval
         /// </summary>
         /// <param name="s">
         /// The string.
         /// </param>
-        /// <param name="semitoneQuality">
-        /// The semitoneQuality.
+        /// <param name="interval">
+        /// The interval.
         /// </param>
         /// <returns>
         /// The <see cref="bool" />.
         /// </returns>
-        public static bool TryParse(string s, out SemitoneQuality semitoneQuality)
+        public static bool TryParse(string s, out Interval interval)
         {
-            semitoneQuality = P1;
+            interval = P1;
 
             if (ByFieldName.TryGetValue(s, out var fq))
             {
-                semitoneQuality = fq;
+                interval = fq;
                 return true;
             }
 
             if (ByName.TryGetValue(s, out var nq))
             {
-                semitoneQuality = nq;
+                interval = nq;
                 return true;
             }
 
@@ -410,30 +410,30 @@ namespace GA.Domain.Music.Intervals.Qualities
             var diatonicIntervalString = Regex.Match(s, "[0-9]*$").ToString();
             if (string.IsNullOrEmpty(diatonicIntervalString))
             {
-                return false; // Diatonic semitoneQuality part found
+                return false; // Diatonic interval part found
             }
 
-            if (!Accidental.TryParse(accidentalString, out var accidental) || 
+            if (!Accidental.TryParse(accidentalString, out var accidental) ||
                 !Enum.TryParse<DiatonicInterval>(diatonicIntervalString, out var diatonicInterval))
             {
                 return false;
             }
 
-            semitoneQuality = new SemitoneQuality(diatonicInterval, accidental);
+            interval = new Interval(diatonicInterval, accidental);
 
             return true;
         }
 
         /// <summary>
-        /// Converts a string into an accidented diatonic semitoneQuality
+        /// Converts a string into an accidented diatonic interval
         /// </summary>
         /// <param name="s">
         /// The string.
         /// </param>
         /// <returns>
-        /// The <see cref="SemitoneQuality" />.
+        /// The <see cref="Interval" />.
         /// </returns>
-        public new static SemitoneQuality Parse(string s)
+        public new static Interval Parse(string s)
         {
             s = Regex.Replace(s.Trim(), "[()]", string.Empty);
             var accidentalString = Regex.Match(s, "^[^0-9]*").ToString();
@@ -441,35 +441,35 @@ namespace GA.Domain.Music.Intervals.Qualities
 
             var accidental = Accidental.Parse(accidentalString);
             var interval = (DiatonicInterval)Enum.Parse(typeof(DiatonicInterval), intervalString);
-            var result = new SemitoneQuality(interval, accidental);
+            var result = new Interval(interval, accidental);
 
             return result;
         }
 
         /// <summary>
-        /// Converts a string into a set of <see cref="SemitoneQuality" /> object
+        /// Converts a string into a set of <see cref="Interval" /> object
         /// </summary>
         /// <param name="s">
         /// The string.
         /// </param>
         /// <returns>
-        /// The collection of <see cref="SemitoneQuality" />.
+        /// The collection of <see cref="Interval" />.
         /// </returns>
-        public static IEnumerable<SemitoneQuality> ParseToCollection(string s)
+        public static IEnumerable<Interval> ParseToCollection(string s)
         {
             s = s.Trim();
 
             if (string.IsNullOrEmpty(s) || s.Length == 0)
             {
-                return new SemitoneQuality[] { };
+                return new Interval[] { };
             }
 
-            var result = new List<SemitoneQuality>(s.Split(' ', ',', ';').Select(Parse));
+            var result = new List<Interval>(s.Split(' ', ',', ';').Select(Parse));
 
             return result;
         }
 
-        public bool IsEnharmonicWith(SemitoneQuality other)
+        public bool IsEnharmonicWith(Interval other)
         {
             var result = Distance.Equals(other.Distance);
 
@@ -481,7 +481,7 @@ namespace GA.Domain.Music.Intervals.Qualities
         /// <summary>
         /// True if enharmonic with any of the accidentedDiatonicIntervals
         /// </summary>
-        public bool IsEnharmonicWith(params SemitoneQuality[] qualities)
+        public bool IsEnharmonicWith(params Interval[] qualities)
         {
             if (qualities.Length == 0)
                 throw new ArgumentNullException("qualities");
@@ -491,46 +491,46 @@ namespace GA.Domain.Music.Intervals.Qualities
             return result;
         }
 
-        public SemitoneQuality? ToEnharmonic(SemitoneQuality semitoneQuality)
+        public Interval? ToEnharmonic(Interval interval)
         {
             var result =
-                IsEnharmonicWith(semitoneQuality)
-                    ? (SemitoneQuality?) semitoneQuality
+                IsEnharmonicWith(interval)
+                    ? (Interval?) interval
                     : null;
 
             return result;
         }
 
-        public SemitoneQuality? ToEnharmonic(params SemitoneQuality[] qualities)
+        public Interval? ToEnharmonic(params Interval[] qualities)
         {
             if (qualities.Length == 0)
                 throw new ArgumentNullException("qualities");
 
             var tmpThis = this;
-            foreach (var semitoneQuality in qualities.Where(tmpThis.IsEnharmonicWith))
-                return semitoneQuality;
+            foreach (var interval in qualities.Where(tmpThis.IsEnharmonicWith))
+                return interval;
             return null;
         }
 
         /// <summary>
-        /// Returns a new SemitoneQuality where explicit natural is replace with natural 
+        /// Returns a new Interval where explicit natural is replace with natural 
         /// </summary>
-        public SemitoneQuality ToNormalizedNatural()
+        public Interval ToNormalizedNatural()
         {
             if (Accidental != Accidental.Natural)
                 return this;
 
-            var result = new SemitoneQuality(this.semitoneQuality, Accidental.None);
+            var result = new Interval(this.interval, Accidental.None);
 
             return result;
         }
 
         */
 
-        public SemitoneQuality ToInversion()
+        public Interval ToInversion()
         {
             var invertedDiatonicInterval = DiatonicInterval.Invert();
-            var result = new SemitoneQuality(invertedDiatonicInterval, !Accidental);
+            var result = new Interval(invertedDiatonicInterval, !Accidental);
 
             return result;
         }
@@ -540,7 +540,7 @@ namespace GA.Domain.Music.Intervals.Qualities
             return Name;
         }
 
-        public int CompareTo(SemitoneQuality other)
+        public int CompareTo(Interval other)
         {
             var result = DiatonicInterval.CompareTo(other.DiatonicInterval);
 
@@ -557,7 +557,7 @@ namespace GA.Domain.Music.Intervals.Qualities
         /// <summary>
         /// Indicates whether two accidented diatonic intervala are equal
         /// </summary>
-        public static bool operator ==(SemitoneQuality a, SemitoneQuality b)
+        public static bool operator ==(Interval a, Interval b)
         {
             if (ReferenceEquals(a, b)) return true;
             if (ReferenceEquals(null, a)) return false;
@@ -569,35 +569,35 @@ namespace GA.Domain.Music.Intervals.Qualities
         /// <summary>
         /// Indicates whether two accidented diatonic intervals are different
         /// </summary>
-        public static bool operator !=(SemitoneQuality a, SemitoneQuality b)
+        public static bool operator !=(Interval a, Interval b)
         {
             var result = !(a == b);
 
             return result;
         }
 
-        public static SemitoneQuality operator +(SemitoneQuality semitoneQuality, Accidental accidental)
+        public static Interval operator +(Interval interval, Accidental accidental)
         {
-            var result = new SemitoneQuality(semitoneQuality.DiatonicInterval, semitoneQuality.Accidental + accidental);
+            var result = new Interval(interval.DiatonicInterval, interval.Accidental + accidental);
 
             return result;
         }
 
-        public static Semitone operator -(SemitoneQuality interval1, SemitoneQuality interval2)
+        public static Semitone operator -(Interval interval1, Interval interval2)
         {
             var result = (Semitone)interval1 - interval2;
 
             return result;
         }
 
-        public static SemitoneQuality operator !(SemitoneQuality semitoneQuality)
+        public static Interval operator !(Interval interval)
         {
-            var result = semitoneQuality.ToInversion();
+            var result = interval.ToInversion();
 
             return result;
         }
 
-        public bool Equals(SemitoneQuality other)
+        public bool Equals(Interval other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -609,7 +609,7 @@ namespace GA.Domain.Music.Intervals.Qualities
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((SemitoneQuality)obj);
+            return Equals((Interval)obj);
         }
 
         public override int GetHashCode()
@@ -623,18 +623,40 @@ namespace GA.Domain.Music.Intervals.Qualities
             }
         }
 
-        private class EnharmonicComparer : IEqualityComparer<SemitoneQuality>
+        private static int GetDistance(
+            DiatonicInterval diatonicInterval, 
+            Accidental accidental)
         {
-            public static readonly IEqualityComparer<SemitoneQuality> Instance = new EnharmonicComparer();
+            var diatonicDistance = (int) diatonicInterval - 1;
+            var octave = 0;
+            if (diatonicDistance >= 8)
+            {
+                diatonicDistance -= 8;
+                octave = 1;
+            }
+            if (diatonicDistance < 0)
+            {
+                diatonicDistance += 8;
+                octave = -1;
+            }
 
-            public bool Equals(SemitoneQuality x, SemitoneQuality y)
+            var result = ScaleDefinition.Major.Absolute[diatonicDistance] + accidental.Distance + octave * 8;
+
+            return result;
+        }
+
+        private class EnharmonicComparer : IEqualityComparer<Interval>
+        {
+            public static readonly IEqualityComparer<Interval> Instance = new EnharmonicComparer();
+
+            public bool Equals(Interval x, Interval y)
             {
                 var result = x.Distance == y.Distance && x != y;
 
                 return result;
             }
 
-            public int GetHashCode(SemitoneQuality obj)
+            public int GetHashCode(Interval obj)
             {
                 return obj.Distance;
             }
@@ -645,14 +667,14 @@ namespace GA.Domain.Music.Intervals.Qualities
             }
         }
 
-        private static ILookup<SemitoneQuality, SemitoneQuality> GetEnharmonicsLookup()
+        private static ILookup<Interval, Interval> GetEnharmonicsLookup()
         {
             var twoOctaveIntervals = (from interval in Enumerable.Range(0, 14).Select(i => (DiatonicInterval)i)
                                       from accidental in Accidental.Values
-                                      select new SemitoneQuality(interval, accidental)).ToArray();
+                                      select new Interval(interval, accidental)).ToArray();
 
             var result = (from i1 in twoOctaveIntervals
-                          from i2 in twoOctaveIntervals    
+                          from i2 in twoOctaveIntervals
                           where i1.IsEnharmonicWith(i2) && !ReferenceEquals(i1, i2)
                           select new { i1, i2 }).ToLookup(p => p.i1, p => p.i2);
 

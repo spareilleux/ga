@@ -5,7 +5,7 @@ using GA.Domain.Music.Intervals.Collections;
 namespace GA.Domain.Music.Intervals.Metadata
 {
     /// <summary>
-    /// Interval symmetry info.
+    /// ChromaticInterval symmetry info.
     /// </summary>
     public class Symmetry
     {

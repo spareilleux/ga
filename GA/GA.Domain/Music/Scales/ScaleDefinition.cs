@@ -73,7 +73,7 @@ namespace GA.Domain.Music.Scales
         /// </summary>
         public string Steps => base.ToString();
 
-        public IReadOnlyList<SemitoneQuality> Qualities => GetQualities();
+        public IReadOnlyList<Interval> Qualities => GetQualities();
 
         /// <summary>
         /// Gets a flag that indicates whether the scale is minor (Contains a minor 3rd).
@@ -172,7 +172,7 @@ namespace GA.Domain.Music.Scales
             return result;
         }
 
-        private IReadOnlyList<SemitoneQuality> GetQualities()
+        private IReadOnlyList<Interval> GetQualities()
         {
             var accidentalKind = AccidentalKind.Flat;
             var result = new QualityList(Absolute, accidentalKind);

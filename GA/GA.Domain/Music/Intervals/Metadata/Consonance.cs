@@ -3,7 +3,7 @@
 namespace GA.Domain.Music.Intervals.Metadata
 {
     /// <summary>
-    /// Interval consonance (See http://www.thegearpage.net/board/showthread.php?t=681018)
+    /// ChromaticInterval consonance (See http://www.thegearpage.net/board/showthread.php?t=681018)
     /// </summary>
     public enum Consonance
     {

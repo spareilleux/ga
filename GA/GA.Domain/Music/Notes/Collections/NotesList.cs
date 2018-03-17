@@ -8,9 +8,6 @@ namespace GA.Domain.Music.Notes.Collections
     {
         private readonly IReadOnlyList<Note> _notes;
 
-        public static NotesList SharpNotes = Parse("C C# D D# E F F# G G# A A# B");
-        public static NotesList FlatNotes = Parse("C Db D Eb E F Gb G Ab A Bb B");
-
         /// <summary>
         /// Converts an list of notes from its string representation.
         /// </summary>

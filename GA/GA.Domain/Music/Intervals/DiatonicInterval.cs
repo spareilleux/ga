@@ -27,20 +27,20 @@
     //{
     //    private readonly string _name;
 
-    //    public new static readonly DiatonicInterval Unison = new DiatonicInterval(0, Interval.Unison, nameof(Unison));
-    //    public static readonly DiatonicInterval Second = new DiatonicInterval(1, Interval.M2, nameof(Second));
-    //    public static readonly DiatonicInterval Third = new DiatonicInterval(2, Interval.M3, nameof(Third));
-    //    public static readonly DiatonicInterval Fourth = new DiatonicInterval(3, Interval.P4, nameof(Fourth));
-    //    public static readonly DiatonicInterval Fifth = new DiatonicInterval(4, Interval.P5, nameof(Fifth));
-    //    public static readonly DiatonicInterval Sixth = new DiatonicInterval(5, Interval.M6, nameof(Sixth));
-    //    public static readonly DiatonicInterval Seventh = new DiatonicInterval(6, Interval.M7, nameof(Seventh));
-    //    public new static readonly DiatonicInterval Octave = new DiatonicInterval(7, Interval.Octave, nameof(Octave));
-    //    public static readonly DiatonicInterval Ninth = new DiatonicInterval(8, Interval.M9, nameof(Ninth));
-    //    public static readonly DiatonicInterval Tenth = new DiatonicInterval(9, Interval.M10, nameof(Tenth));
-    //    public static readonly DiatonicInterval Eleventh = new DiatonicInterval(10, Interval.P11, nameof(Eleventh));
-    //    public static readonly DiatonicInterval Twelfth = new DiatonicInterval(11, Interval.P12, nameof(Twelfth));
-    //    public static readonly DiatonicInterval Thirteenth = new DiatonicInterval(12, Interval.M13, nameof(Thirteenth));
-    //    public static readonly DiatonicInterval Fourteenth = new DiatonicInterval(13, Interval.M14, nameof(Fourteenth));
+    //    public new static readonly DiatonicInterval Unison = new DiatonicInterval(0, ChromaticInterval.Unison, nameof(Unison));
+    //    public static readonly DiatonicInterval Second = new DiatonicInterval(1, ChromaticInterval.M2, nameof(Second));
+    //    public static readonly DiatonicInterval Third = new DiatonicInterval(2, ChromaticInterval.M3, nameof(Third));
+    //    public static readonly DiatonicInterval Fourth = new DiatonicInterval(3, ChromaticInterval.P4, nameof(Fourth));
+    //    public static readonly DiatonicInterval Fifth = new DiatonicInterval(4, ChromaticInterval.P5, nameof(Fifth));
+    //    public static readonly DiatonicInterval Sixth = new DiatonicInterval(5, ChromaticInterval.M6, nameof(Sixth));
+    //    public static readonly DiatonicInterval Seventh = new DiatonicInterval(6, ChromaticInterval.M7, nameof(Seventh));
+    //    public new static readonly DiatonicInterval Octave = new DiatonicInterval(7, ChromaticInterval.Octave, nameof(Octave));
+    //    public static readonly DiatonicInterval Ninth = new DiatonicInterval(8, ChromaticInterval.M9, nameof(Ninth));
+    //    public static readonly DiatonicInterval Tenth = new DiatonicInterval(9, ChromaticInterval.M10, nameof(Tenth));
+    //    public static readonly DiatonicInterval Eleventh = new DiatonicInterval(10, ChromaticInterval.P11, nameof(Eleventh));
+    //    public static readonly DiatonicInterval Twelfth = new DiatonicInterval(11, ChromaticInterval.P12, nameof(Twelfth));
+    //    public static readonly DiatonicInterval Thirteenth = new DiatonicInterval(12, ChromaticInterval.M13, nameof(Thirteenth));
+    //    public static readonly DiatonicInterval Fourteenth = new DiatonicInterval(13, ChromaticInterval.M14, nameof(Fourteenth));
 
     //    public static readonly DiatonicInterval[] OneOctaveValues = {
     //                                                                    Unison,
@@ -78,7 +78,7 @@
 
     //    private DiatonicInterval(
     //        int value,
-    //        Interval interval,
+    //        ChromaticInterval interval,
     //        string name)
     //        : base(interval)
     //    {
@@ -238,9 +238,9 @@
     //        return interval.Value;
     //    }
 
-    //    public static SemitoneQuality operator +(DiatonicInterval interval, Accidental accidental)
+    //    public static Interval operator +(DiatonicInterval interval, Accidental accidental)
     //    {
-    //        return new SemitoneQuality(interval, accidental);
+    //        return new Interval(interval, accidental);
     //    }
 
     //    public static DiatonicInterval operator +(DiatonicInterval a, DiatonicInterval b)

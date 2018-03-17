@@ -13,12 +13,13 @@ namespace GA.CLI
         {
             Console.WriteLine("Guitar Alchemist");
 
+            var keyOfF = Key.Major[MajorKey.F];
+            var b = keyOfF.GetIntervalFromRoot(Note.B);
+
+            var key = Key.Major[-6];
             var Fb = new Note(DiatonicNote.F, Accidental.Flat);
             var Eb = new Note(DiatonicNote.E, Accidental.Flat);
             var d = Fb - Eb;
-
-            var key = new Key(MajorKey.Bb);
-            var root = key.Root;
 
             var s = new Semitone(10);
             var flat = Accidental.Flat;

@@ -95,7 +95,7 @@ namespace GA.Domain.Music.Intervals.Collections
 
             if (Semitone.TryParse(s, out var semitone)) return semitone;
             if (Step.TryParse(s, out var step)) return step;
-            if (SemitoneQuality.TryParse(s, out var quality)) return quality;
+            if (Interval.TryParse(s, out var quality)) return quality;
 
             throw new InvalidOperationException($"Failed parsing '{s}' into {nameof(Semitone)}");
         }

@@ -7,11 +7,11 @@ namespace GA.Domain.Music.Intervals.Collections
 {
     /// <inheritdoc />
     /// <summary>
-    /// Base class for a semitoneQuality list.
+    /// Base class for a interval list.
     /// </summary>
-    public class QualityList : IReadOnlyList<SemitoneQuality>
+    public class QualityList : IReadOnlyList<Interval>
     {
-        private readonly IReadOnlyList<SemitoneQuality> _qualities;
+        private readonly IReadOnlyList<Interval> _qualities;
 
         public QualityList(
             IEnumerable<Semitone> absoluteSemitones,
@@ -24,19 +24,19 @@ namespace GA.Domain.Music.Intervals.Collections
             AccidentalKind accidentalKind)
         {
             var qualities = accidentalKind == AccidentalKind.Flat
-                ? absoluteSemitones.Select(SemitoneQuality.GetFlat)
-                : absoluteSemitones.Select(SemitoneQuality.GetSharp);
+                ? absoluteSemitones.Select(Interval.GetFlat)
+                : absoluteSemitones.Select(Interval.GetSharp);
             var result = new QualityList(qualities);
 
             return result;
         }
 
-        protected QualityList(IEnumerable<SemitoneQuality> qualities)
+        protected QualityList(IEnumerable<Interval> qualities)
         {
             _qualities = qualities.ToList().AsReadOnly();
         }
 
-        public IEnumerator<SemitoneQuality> GetEnumerator()
+        public IEnumerator<Interval> GetEnumerator()
         {
             return _qualities.GetEnumerator();
         }
@@ -48,7 +48,7 @@ namespace GA.Domain.Music.Intervals.Collections
 
         public int Count => _qualities.Count;
 
-        public SemitoneQuality this[int index] => _qualities[index];
+        public Interval this[int index] => _qualities[index];
 
         public override string ToString()
         {

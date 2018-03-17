@@ -6,7 +6,7 @@ namespace GA.Domain.Music.Intervals
     /// <inheritdoc cref="IEquatable{Semitone}" />
     /// <inheritdoc cref="IComparable{Semitone}" />
     /// <summary>
-    /// Interval as semitones (See http://en.wikipedia.org/wiki/Semitone)
+    /// ChromaticInterval as semitones (See http://en.wikipedia.org/wiki/Semitone)
     /// </summary>
     public class Semitone : IEquatable<Semitone>, IComparable<Semitone>
     {

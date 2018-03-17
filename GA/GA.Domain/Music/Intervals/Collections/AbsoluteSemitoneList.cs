@@ -77,7 +77,7 @@ namespace GA.Domain.Music.Intervals.Collections
 
         public int Count => AbsoluteSemitones.Count;
 
-        public Semitone this[int index] => AbsoluteSemitones[index];
+        public Semitone this[int index] => GetAbsoluteSemitone(index);
 
         public bool Contains(Semitone item)
         {
@@ -111,11 +111,26 @@ namespace GA.Domain.Music.Intervals.Collections
             return result;
         }
 
+        private Semitone GetAbsoluteSemitone(int index)
+        {
+            if (index < 0)
+            {
+                throw new IndexOutOfRangeException($"'{nameof(index)}' must be positive (= {index})");
+            }
+
+            if (index >= Count)
+            {
+                throw new IndexOutOfRangeException($"'{nameof(index)}' must be less than {Count} (= {index})");
+            }
+
+            return AbsoluteSemitones[index];
+        }
+
         private static Semitone ParseSelector(string s)
         {
             s = s?.Trim();
             if (Semitone.TryParse(s, out var semitone)) return semitone;
-            if (SemitoneQuality.TryParse(s, out var quality)) return quality;
+            if (Interval.TryParse(s, out var quality)) return quality;
 
             throw new InvalidOperationException($"Failed parsing '{s}' into {nameof(Semitone)}");
         }
