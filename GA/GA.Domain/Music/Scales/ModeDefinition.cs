@@ -1,10 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using GA.Domain.Music.Intervals;
+using GA.Core.Extensions;
 using GA.Domain.Music.Intervals.Collections;
+using GA.Domain.Music.Intervals.Qualities;
+using GA.Domain.Music.Keys;
+using GA.Domain.Music.Notes;
 
 namespace GA.Domain.Music.Scales
 {
+    using Intervals;
+
     /// <inheritdoc />
     /// <summary>
     /// Mode definition.
@@ -23,7 +28,6 @@ namespace GA.Domain.Music.Scales
             DistanceFromParentScale = distanceFromParentScale;
             ModeName = modeName;
             ModeIndex = modeIndex;
-            //ColorTones = GetColorTones();
         }
 
         /// <summary>
@@ -46,20 +50,37 @@ namespace GA.Domain.Music.Scales
         /// </summary>
         public int ModeIndex { get; }
 
-        public QualityList ColorTones { get; }
-
         public override string ToString()
         {
             return $"{base.ToString()} - {ModeName}}}";
         }
 
-        //private QualityList GetColorTones()
-        //{            
-        //    var colorTones = Absolute.Except(_major.Absolute).ToList();
-        //    // var accidentalKind = 
-        //    var result = new QualityList(colorTones, AccidentalKind.Sharp);
+        protected override IReadOnlyList<Interval> GetIntervals()
+        {
+            var modeNotes = GetModeNotes();
+            var modeRoot = modeNotes.First();
+            var intervals = new List<Interval>();
 
-        //    return result;
-        //}
+            var keys = Key.Major[modeRoot];
+            var key = keys.First();
+            foreach (var modeNote in modeNotes)
+            {
+                var interval = key.GetIntervalFromRoot(modeNote);
+                intervals.Add(interval);
+            }            
+            var result = new IntervalsList(intervals);
+
+            return result;
+        }
+
+        private List<Note> GetModeNotes()
+        {
+            var cmajNotes = Key.Major[MajorKey.C].Notes;
+            var absoluteSemitones  = new AbsoluteSemitoneList(ParentScale.Absolute.Take(7));
+            var parentScaleNotes = cmajNotes.GetNotes(absoluteSemitones);
+            var result = parentScaleNotes.Rotate(ModeIndex).ToList();
+
+            return result;
+        }
     }
 }

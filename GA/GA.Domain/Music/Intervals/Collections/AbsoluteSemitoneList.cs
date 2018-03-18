@@ -65,6 +65,11 @@ namespace GA.Domain.Music.Intervals.Collections
         /// </summary>
         public Symmetry Symmetry { get; }
 
+        /// <summary>
+        /// Gets a flag that indicates whether the list contains m3 interval.
+        /// </summary>
+        public bool IsMinor => Contains(3); // m3 interval
+
         public IEnumerator<Semitone> GetEnumerator()
         {
             return AbsoluteSemitones.GetEnumerator();

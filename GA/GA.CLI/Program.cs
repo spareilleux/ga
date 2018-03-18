@@ -13,6 +13,11 @@ namespace GA.CLI
         {
             Console.WriteLine("Guitar Alchemist");
 
+            var allScales = ScaleDefinition.All;
+            var major = ScaleDefinition.Major;
+            var lydian = major[MajorScaleMode.Lydian];
+            var a = lydian.Intervals;
+
             var keyOfF = Key.Major[MajorKey.F];
             var b = keyOfF.GetIntervalFromRoot(Note.B);
 
@@ -25,15 +30,10 @@ namespace GA.CLI
             var flat = Accidental.Flat;
             var sharp = Accidental.Sharp;
 
-            var allScales = ScaleDefinition.All;
-            var major = ScaleDefinition.Major;
-            var lydian = major[MajorScaleMode.Lydian];
-            var col = lydian.ColorTones;
-
             //var a = major.Absolute;
             //var b = lydian.Absolute;
             //var colorTones = b.Except(a).ToList();
-            //var colorQualities = new QualityList(colorTones, AccidentalKind.Sharp);
+            //var colorQualities = new IntervalsList(colorTones, AccidentalKind.Sharp);
         }
     }
 }

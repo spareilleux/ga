@@ -44,5 +44,12 @@ namespace GA.Domain.Music.Notes.Collections
         public int Count => _notes.Count;
 
         public Note this[int index] => _notes[index];
+
+        public override string ToString()
+        {
+            var result = string.Join(" ", this);
+
+            return result;
+        }
     }
 }

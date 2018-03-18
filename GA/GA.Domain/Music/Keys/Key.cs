@@ -112,7 +112,6 @@ namespace GA.Domain.Music.Keys
 
         public string Name => GetName();
 
-
         /// <summary>
         /// Gets the interval from key root.
         /// </summary>
@@ -120,7 +119,7 @@ namespace GA.Domain.Music.Keys
         /// <returns>The <see cref="Interval"/>.</returns>
         public Interval GetIntervalFromRoot(Note note)
         {
-            var result = note - Root;
+            var result = note - this;
 
             return result;
         }
@@ -145,7 +144,7 @@ namespace GA.Domain.Music.Keys
                 notes.Add(note);
             }
 
-            var result = new KeyNotesList(signedAccidentalCount, notes);
+            var result = new KeyNotesList(notes);
 
             return result;
         }
@@ -168,9 +167,11 @@ namespace GA.Domain.Music.Keys
         {
             var keyRoot = key.Root;
             var keyNote = key.Notes[note.DiatonicNote];
-            var diatonicDistance = (DiatonicInterval)keyNote.DiatonicNote.DistanceFrom(keyRoot.DiatonicNote);
+            var diatonicDistance = keyNote.DiatonicNote.DistanceFrom(keyRoot.DiatonicNote);
+            diatonicDistance = (diatonicDistance + 7) % 7;
+            var diatonicInterval = (DiatonicInterval) diatonicDistance + 1;
             var accidental = note.Accidental - keyNote.Accidental;
-            var result = new Interval(diatonicDistance + 1, accidental);
+            var result = new Interval(diatonicInterval, accidental);
 
             return result;
         }
@@ -181,9 +182,9 @@ namespace GA.Domain.Music.Keys
         {
             private readonly ILookup<Semitone, Key> _byDistanceFromC;
 
-            protected KeysBase(IReadOnlyList<Key> values)
+            protected KeysBase(IReadOnlyCollection<Key> values)
             {
-                Values = values;
+                Values = values. OrderBy(key =>key.SignedAccidentalCount).ToList().AsReadOnly();
                 BySignedAccidentalCounIndexer = new Indexer<int, Key>(values.ToDictionary(key => key.SignedAccidentalCount));
                 _byDistanceFromC = values.ToLookup(key => key.Root.DistanceFromC);
             }

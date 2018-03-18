@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GA.Core.Extensions;
 using GA.Domain.Music.Intervals;
 using GA.Domain.Music.Intervals.Qualities;
 using GA.Domain.Music.Keys;
@@ -33,12 +32,12 @@ namespace GA.Domain.Music.Notes
         public static Note Asharp = new Note(DiatonicNote.A, Accidental.Sharp);
         public static Note Bsharp = new Note(DiatonicNote.B, Accidental.Sharp);
         public static Note Cb = new Note(DiatonicNote.C, Accidental.Flat);
-        public static Note Db = new Note(DiatonicNote.C, Accidental.Flat);
-        public static Note Eb = new Note(DiatonicNote.D, Accidental.Flat);
+        public static Note Db = new Note(DiatonicNote.D, Accidental.Flat);
+        public static Note Eb = new Note(DiatonicNote.E, Accidental.Flat);
         public static Note Fb = new Note(DiatonicNote.F, Accidental.Flat);
-        public static Note Gb = new Note(DiatonicNote.F, Accidental.Flat);
-        public static Note Ab = new Note(DiatonicNote.G, Accidental.Flat);
-        public static Note Bb = new Note(DiatonicNote.A, Accidental.Flat);
+        public static Note Gb = new Note(DiatonicNote.G, Accidental.Flat);
+        public static Note Ab = new Note(DiatonicNote.A, Accidental.Flat);
+        public static Note Bb = new Note(DiatonicNote.B, Accidental.Flat);
 
 
         public Note(

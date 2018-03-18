@@ -51,7 +51,7 @@ namespace GA.Domain.Music.Scales
             if (totalDistance != 12) throw new ArgumentException($"Invalid scale definition - the sum of '{nameof(relativeSemitones)}' is {totalDistance} and must be equal to 12", nameof(relativeSemitones));
 
             ScaleName = scaleName;
-            IsMinor = Absolute.Contains(3); // m3 interval
+            IsMinor = Absolute.IsMinor;
         }
         // ReSharper restore PossibleMultipleEnumeration
 
@@ -73,7 +73,7 @@ namespace GA.Domain.Music.Scales
         /// </summary>
         public string Steps => base.ToString();
 
-        public IReadOnlyList<Interval> Qualities => GetQualities();
+        public IReadOnlyList<Interval> Intervals => GetIntervals();
 
         /// <summary>
         /// Gets a flag that indicates whether the scale is minor (Contains a minor 3rd).
@@ -89,11 +89,6 @@ namespace GA.Domain.Music.Scales
         /// Gets all scale definitions.
         /// </summary>
         public static IReadOnlyList<ScaleDefinition> All = ByName.Values.ToList().AsReadOnly();
-
-        public ScaleDefinition AsModal(TonalFamily tonalFamily)
-        {
-            return new ModalScaleDefinition(this, tonalFamily);
-        }
 
         public ModalScaleDefinition<TScaleMode> AsModal<TScaleMode>(TonalFamily tonalFamily)
             where TScaleMode : struct
@@ -172,10 +167,10 @@ namespace GA.Domain.Music.Scales
             return result;
         }
 
-        private IReadOnlyList<Interval> GetQualities()
+        protected virtual IReadOnlyList<Interval> GetIntervals()
         {
             var accidentalKind = AccidentalKind.Flat;
-            var result = new QualityList(Absolute, accidentalKind);
+            var result = new IntervalsList(Absolute, accidentalKind);
 
             return result;
         }
